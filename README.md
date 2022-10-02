@@ -1,2 +1,48 @@
-# Quake-Reignited
-A gameplay mod for Quake that seeks to improve combat flow and enhance its monster AI
+# Welcome to Quake Reignited
+While Quake's multiplayer would end up taking the world by storm, its singleplayer went largely forgotten. Many of the game's issues can be tied to its rough development cycle, but the end result was what a lot of people consider a mediocre campaign and a lackluster weapon roster. Underneath the grimy exterior lies a challenging and fun game, however, and Reignited seeks to give Quake the shine it's always deserved. This gameplay mod keeps new mechanics to a minimum, instead focusing on polishing what's there and really bringing out the viscera of Quake's monsters.
+
+To compile this code you'll need [FTEQCC](https://www.fteqcc.org/). The code uses no source port specific features so it should run on any Quake source port. Tested with QuakeSpasm (Spiked), FTEQW, vkQuake, and Quake Enhanced.
+
+## The Weapon Arsenal
+Every weapon in the game has seen an overhaul, putting an emphasis on greater player agency instead of relying on powerups and rocket spam. While some of the best weapons have been dialed back in their destructiveness, the rest of the player's loadout has seen an increase in it. Every weapon now has a greater purpose which should help with the monotony of always falling back on the Super Nailgun and Rocket Launcher when they're available.
+
+###### Shotguns
+Both shotguns have seen an increase to their pellet count to help with their damage and range. The standard shotgun now does as much damage per shell as the double barrel making it match its older sibling's output. Pellets are now fast moving projectiles as opposed to hitscan attacks to encourage better aim, especially past mid range. To help keep their DPS in check, their fire rates have been decreased. Their max ammo has also been reduced to compensate for their increased damage.
+
+###### Nailguns
+The regular Nailgun has been given an increased fire rate and faster projectile speed. This now gives it a distinct advantage over the Super Nailgun at mid ranges. The Super Nailgun has been given a wind-up and wind-down time to help balance its incredibly high DPS. The nature of its poor tap firing makes it much better for encounters where the player is expected to commit. Their max ammo has been increased since their total damage output was quite low compared to other weapon types.
+
+###### Launchers
+Both launchers were hit with a small damage nerf to compensate for their area of effect. The Rocket Launcher has been given a faster projectile speed but now has less explosive damage and larger impact damage. This should put it in more of a mid-long range role. The Grenade Launcher retains very high damage output, but remains limited by its low range. Both saw a fire rate nerf to help dial back on their spamability, similar to the shotguns. Their max ammo has been reduced significantly alongside their ammo pickups to keep their total damage output in check.
+
+###### The Thunderbolt
+This weapon has been entirely reworked to better fit its role as a BFG-style weapon while keeping its lightning theme. Targets getting hit will be stunlocked to make it the best choice for dealing with problematic monsters. On top of this, lower damage bolts will emanate from the hit target, damaging all nearby enemies. Its ammo pickups have seen a rework which should give more opportunities to use it without it overstepping its boundaries.
+
+## The Items
+Given the player's direct actions are getting a buff, options outside of their control are getting toned down. Since weapons now have greater variety, less emphasis can be put on map spawns the player won't know how to use effectively until after the fact.
+
+###### Powerups
+Quake's powerups are iconic, but perhaps its because they were needed for the game to truly shine. Brief moments of Quad Damage insanity are highlights of the singleplayer, but are ultimately unhealthy for balancing the map flow. Quad Damage has been renamed to the Damage Amplifier and has had its damage reduced to 3x to keep that powerful feeling without making the improved weapons too strong. The Pentagram of Protection has been dropped down to only 20 seconds of invulnerability to give it a tighter window since it's effectively a cheat code. The ring has been entirely reworked to act more like an improved version of Doom's Partial Invisibility. This should give it better combat utility in those few cases where it does show up.
+
+###### Armor
+Armor is one of Quake's weakest balance points as it's everywhere and gives the player way too much effective health. The end result is that some already weak enemies end up underpowered. Top that off with how common health is to find and death is rarely a fear outside of those few moments of burst damage. To fix this, the overall effectiveness or armor alongside how much is given have been reduced. Heavy Armor will still give 200 to keep its place as a reward for exploration.
+
+###### Megahealths
+Megahealths are in a weird spot since they either seem to come in pairs of two or not at all. Getting 100 health back instantly can fix all past mistakes from a previous encounter or trivialize a future one depending on the player's current health. Id tried to keep them in check by having health over 100 drain, but it was too slow to be meaningful. Rather than increase the drain speed, Megahealths will now only give 50 health. The trade-off is that health over 100 no longer drains and can be carried between levels, keeping them rewarding to find. Max health has also been capped at 200 to prevent the player from building up too much excess HP.
+
+## The Monsters
+Quake has a surprising amount of monster variety, but it often doesn't show its face in maps. Part of the reason for this is the buggy AI making it hard to have a monster truly fulfill its niche. Ogres are a great example of this since their inability to aim hinders them more than it helps. If a mapper wants to use them, they have to avoid putting them at low elevations, and putting them at high elevations comes with randomness being added to a fight. Sponginess plays another factor where enemy selection has to be chosen carefully given the player's limited ability to tackle multiple at once. Maps will either devolve into Super Nailgun and Rocket Launcher spam to counter this or purposely avoid giving the player these weapons in an attempt to keep encounters more interesting.
+
+To start with the former problem, monsters have seen sweeping behavior changes to make them shine better. In general they can now fire around corners making corner peeking much riskier for the player. Monsters that fire projectiles with gravity can now aim them properly, removing their randomness in fights and allowing them to be placed more freely. Monsters with leaping and charge attacks have been given better block checking to prevent them from getting stuck on corners, doorways, and ledges. All monsters have improved line-of-sight checking to help prevent infighting. On top of all this are a bunch of miscellaneous bug fixes and tweaks to make monsters more responsive to the player as a whole.
+
+Monster health across the board has been readjusted to better fit the player's new weapon damage model. This should help dial back the sponginess while opening up more options for interesting encounter design. Low tier monsters have seen some unique buffs to make them more viable in all combat scenarios. Pain has long served as a point of total RNG in fights, such as long stagger animations disproportionately aiding the player. It's now been overhauled to remove all RNG, instead relying on a build up system that activates a monster's pain state when reaching its threshold. This gives the player's weapons more defined roles as well by giving them another balancing factor. Stagger animations are now exclusive to pain caused by the Damage Amplifier allowing for monsters to consistently get back in the fight.
+
+Last is baseline difficulty. Most monster projectiles have seen a speed buff since they tend to suffer disproportionately at range compared to the player. For instance, Scrags often fight at mid range making their projectiles too easy to dodge. Damage has been increased in general to give monsters a fairer chance at chipping through the player's large health pool. This also means players will have to be more cautious about their health pickup management. Nightmare monsters remain the most aggressive but have seen some tweaks to reaction times to make them fairer to fight. They'll be able to lead their shots exclusively on this difficulty to force players to mix up their movement. Nightmare should now be much easier to balance around for mappers since almost all of the "turret enemy" aspect has been removed.
+
+## Co-op
+Quake Reignited makes multiple changes to co-op in the name of helping improve the experience. Player backpacks will no longer drop with players, instead getting to keep all the ammo, weapons, and keys they've picked up. Players will also now respawn where they died if safe to do so, giving a brief window of invulnerability to prevent death loops from occurring. Common items like ammo, basic health, and basic armor will no longer disappear after one person picks them up, leaving them for all to pick up once. Playing on Nightmare gives access to Nightmare Co-op, a new mode where if even one player dies, the map is restarted to how it was first entered. Setting the `coop` console variable to 2 will allow players to use the vanilla co-op rules should they prefer that.
+
+## Credits
+- id Software for creating Quake
+- Jason2Brownlee for their [cleaned up Quake C](https://github.com/Jason2Brownlee/CleanFixedQuakeC)
+- Everyone who helped playtest
