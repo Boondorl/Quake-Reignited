@@ -144,7 +144,7 @@ void() CheckForCharge =
 		return;
 
 	// charge
-	SUB_AttackFinished (2, 2);
+	SUB_AttackFinished (2, 2, FALSE);
 	hknight_char_a1 ();
 };
 
@@ -505,7 +505,7 @@ float() hknight_checkatk =
 			return FALSE;
 		
 		self.attack_state = AS_MISSILE;
-		SUB_AttackFinished(2.5+random(), 2);
+		SUB_AttackFinished(2.5+random(), 2, FALSE);
 		return TRUE;
 	}
 	

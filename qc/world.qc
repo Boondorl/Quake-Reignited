@@ -233,6 +233,10 @@ void() worldspawn =
 	precache_sound ("weapons/lhit.wav");		//lightning
 	precache_sound ("weapons/lstart.wav");		//lightning start
 	precache_sound ("items/damage3.wav");
+	precache_sound ("items/protect2.wav");		// for coop
+	precache_sound ("items/protect3.wav");
+	precache_sound ("items/inv2.wav");
+	precache_sound ("items/inv3.wav");
 
 	precache_sound ("misc/power.wav");			//lightning for boss
 

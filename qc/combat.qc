@@ -104,6 +104,7 @@ Killed
 */
 
 void() SetLevelFailed;
+float() IsCoop;
 
 void(entity targ, entity attacker) Killed =
 {
@@ -140,7 +141,7 @@ void(entity targ, entity attacker) Killed =
 	monster_death_use();
 	self.th_die ();
 	
-	if (skill == 3 && coop == 1 && !failed)
+	if (IsCoop() && (coop & DISABLE_RESPAWN) && !failed)
 	{
 		if (self.classname == "player")
 			SetLevelFailed();
@@ -181,7 +182,7 @@ void(entity targ, float pain, entity attacker, float damage) AccumulatePain =
 		targ.pain_amount = 0;
 		targ.attack_state = AS_STRAIGHT; // cancel whatever attack they're in
 		targ.th_pain(attacker, damage);
-		SUB_AttackFinished(0.8, 0.8);
+		SUB_AttackFinished(0.8, 0.8, TRUE);
 	}
 }
 
@@ -280,6 +281,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float pain, f
 {
 	if (!targ.takedamage)
 		return;
+	if (IsCoop() && (coop & DISABLE_FRIENDLY_FIRE))
+	{
+		if (targ.classname == "player" && attacker.classname == "player")
+			return;
+	}
 
 	// used by buttons and triggers to set activator for target firing
 	damage_attacker = attacker;

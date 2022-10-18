@@ -118,6 +118,7 @@ void		end_sys_globals;		// flag for structure dumping
 
 // coop
 float 		failed;
+float 		player_count;
 
 //
 // system fields (*** = do not set in prog code, maintained by C code)
@@ -452,6 +453,10 @@ float		skill;
 .float		light_lev;		// not used by game, but parsed by light util
 .float		style;
 
+float		DISABLE_FRIENDLY_FIRE = 16;
+float		DISABLE_RESPAWN		  = 8;
+float		REIGNITED_COOP 		  = 1;
+float		CLASSIC_COOP		  = 2;
 
 //
 // monster ai

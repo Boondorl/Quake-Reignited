@@ -415,7 +415,7 @@ float() zombie_checkatk =
 	if (self.attack_finished > time || enemy_range > RANGE_NEAR)
 		return FALSE;
 	
-	SUB_AttackFinished(2+random(), 2);
+	SUB_AttackFinished(2+random(), 2, FALSE);
 	self.attack_state = AS_MISSILE;
 	return TRUE;
 };

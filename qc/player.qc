@@ -648,7 +648,7 @@ void() PlayerDie =
 	// don't use eyes
 	self.modelindex = modelindex_player;
 
-	if (deathmatch || coop)
+	if (deathmatch || IsCoop())
 		DropBackpack();
 
 	self.weaponmodel = string_null;

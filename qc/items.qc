@@ -212,7 +212,7 @@ void() health_touch =
 		return;
 
 	// Megahealth?  Ignore max_health...
-	local float shouldstay = coop == 1 && self.healtype != 2;
+	local float shouldstay = (coop & REIGNITED_COOP) && self.healtype != 2;
 	if (self.healtype == 2)
 	{
 		if (other.health >= MAX_HEALTH)
@@ -264,7 +264,15 @@ void() health_touch =
 		self.solid = SOLID_NOT;
 	}
 	else if (shouldstay)
+	{
 		AddPickedUp(other);
+		++self.special;
+		if (self.special >= player_count)
+		{
+			self.model = string_null;
+			self.solid = SOLID_NOT;
+		}
+	}
 };
 
 void() item_megahealth_rot =
@@ -305,7 +313,7 @@ void() armor_touch =
 	if (other.classname != "player")
 		return;
 	
-	local float shouldstay = coop == 1 && !self.aflag;
+	local float shouldstay = (coop & REIGNITED_COOP) && !self.aflag;
 	if (shouldstay)
 	{
 		if (AlreadyPickedUp(other))
@@ -339,7 +347,15 @@ void() armor_touch =
 		self.model = string_null;
 	}
 	else if (shouldstay)
+	{
 		AddPickedUp(other);
+		++self.special;
+		if (self.special >= player_count)
+		{
+			self.model = string_null;
+			self.solid = SOLID_NOT;
+		}
+	}
 };
 
 
@@ -504,7 +520,7 @@ void() weapon_touch =
 	if (other.health <= 0 || !(other.flags & FL_CLIENT))
 		return;
 	
-	if (coop == 1)
+	if (coop & REIGNITED_COOP)
 	{
 		if (AlreadyPickedUp(other))
 			return;
@@ -552,13 +568,21 @@ void() weapon_touch =
 
 	activator = other;
 	SUB_UseTargets();			// fire all targets / killtargets
-	if (coop != 1 || self.target != string_null)
+	if (!(coop & REIGNITED_COOP) || self.target != string_null)
 	{
 		self.model = string_null;
 		self.solid = SOLID_NOT;
 	}
-	else if (coop == 1)
+	else if (coop & REIGNITED_COOP)
+	{
 		AddPickedUp(other);
+		++self.special;
+		if (self.special >= player_count)
+		{
+			self.model = string_null;
+			self.solid = SOLID_NOT;
+		}
+	}
 };
 
 
@@ -669,7 +693,7 @@ void() ammo_touch =
 	if (other.classname != "player")
 		return;
 	
-	if (coop == 1)
+	if (coop & REIGNITED_COOP)
 	{
 		if (AlreadyPickedUp(other))
 			return;
@@ -708,14 +732,21 @@ void() ammo_touch =
 	activator = other;
 	// fire all targets / killtargets
 	SUB_UseTargets();
-	
-	if (coop != 1 || self.target != string_null)
+	if (!(coop & REIGNITED_COOP) || self.target != string_null)
 	{
 		self.model = string_null;
 		self.solid = SOLID_NOT;
 	}
-	else if (coop == 1)
+	else if (coop & REIGNITED_COOP)
+	{
 		AddPickedUp(other);
+		++self.special;
+		if (self.special >= player_count)
+		{
+			self.model = string_null;
+			self.solid = SOLID_NOT;
+		}
+	}
 };
 
 
@@ -901,6 +932,11 @@ KEYS
 ===============================================================================
 */
 
+float() IsCoop;
+
+entity currentKey1;
+entity currentKey2;
+
 void() key_touch =
 {
 	if (other.health <= 0 || (other.items & self.items))
@@ -914,12 +950,31 @@ void() key_touch =
 
 	sound (other, CHAN_ITEM, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
-	other.items |= self.items;
 
-	if (!coop)
+	other.items |= self.items;
+	if (!IsCoop())
 	{
 		self.solid = SOLID_NOT;
 		self.model = string_null;
+	}
+	else if (coop & REIGNITED_COOP)
+	{
+		if (self.items & IT_KEY1)
+			currentKey1 = self;
+		else if (self.items & IT_KEY2)
+			currentKey2 = self;
+		
+		local entity p = find(world, classname, "player");
+		while (p)
+		{
+			if (self.items & IT_KEY1)
+				centerprint(p, "Silver key acquired");
+			else if (self.items & IT_KEY2)
+				centerprint(p, "Gold key acquired");
+			
+			p.items |= self.items;
+			p = find(p, classname, "player");
+		}
 	}
 
 	activator = other;
@@ -1109,6 +1164,12 @@ void() powerup_touch =
 		return;
 	if (other.classname != "player")
 		return;
+	
+	if ((coop & REIGNITED_COOP) && self.aflag)
+	{
+		if (AlreadyPickedUp(other))
+			return;
+	}
 
 	sprint (other, self.message);
 	sprint (other,"\n");
@@ -1129,9 +1190,23 @@ void() powerup_touch =
 
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
-	self.solid = SOLID_NOT;
+	
 	other.items |= self.items;
-	self.model = string_null;
+	if (!(coop & REIGNITED_COOP) || !self.aflag || self.target != string_null)
+	{
+		self.model = string_null;
+		self.solid = SOLID_NOT;
+	}
+	else if ((coop & REIGNITED_COOP) && self.aflag)
+	{
+		AddPickedUp(other);
+		++self.special;
+		if (self.special >= player_count)
+		{
+			self.model = string_null;
+			self.solid = SOLID_NOT;
+		}
+	}
 
 	// do the appropriate action
 	if (self.classname == "item_artifact_envirosuit")
@@ -1191,6 +1266,7 @@ void() item_artifact_envirosuit =
 	precache_model ("progs/suit.mdl");
 	precache_sound ("items/suit.wav");
 	precache_sound ("items/suit2.wav");
+	self.aflag = 1;
 	self.noise = "items/suit.wav";
 	setmodel (self, "progs/suit.mdl");
 	self.netname = "Biosuit";
@@ -1364,7 +1440,7 @@ float WORLD_WEAPONS = IT_SUPER_SHOTGUN|IT_NAILGUN|IT_SUPER_NAILGUN|IT_GRENADE_LA
 
 void() DropBackpack =
 {
-	if (coop == 1)
+	if (coop & REIGNITED_COOP)
 	{
 		if (self.classname == "player")
 			return;

@@ -125,7 +125,7 @@ float() EnforcerCheckAtk =
 		}
 		
 		self.attack_state = AS_MISSILE;
-		SUB_AttackFinished (1.4 + random(), 1.4);
+		SUB_AttackFinished (1.4 + random(), 1.4, FALSE);
 		return TRUE;
 	}
 	
@@ -154,7 +154,7 @@ float() enforcer_refire =
 	if (!EnforcerCheckLoS())
 		return FALSE;
 	
-	SUB_AttackFinished (1 + random(), 1);
+	SUB_AttackFinished (1 + random(), 1, FALSE);
 	return TRUE;
 };
 

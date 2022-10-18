@@ -1163,7 +1163,7 @@ CheatCommand
 */
 void() CheatCommand =
 {
-	if (deathmatch || coop)
+	if (deathmatch)
 		return;
 
 	self.ammo_rockets = ROCKET_MAX;
@@ -1345,12 +1345,22 @@ void() ServerflagsCommand =
 
 void() QuadCheat =
 {
-	if (deathmatch || coop)
+	if (deathmatch)
 		return;
 	self.super_time = 1;
 	self.super_damage_finished = time + 30;
 	self.items = self.items | IT_QUAD;
 	dprint ("quad cheat\n");
+};
+
+void() InvisCheat =
+{
+	if (deathmatch)
+		return;
+	self.invisible_time = 1;
+	self.invisible_finished = time + 30;
+	self.items = self.items | IT_INVISIBILITY;
+	dprint ("invis cheat\n");
 };
 
 /*
@@ -1372,6 +1382,8 @@ void() ImpulseCommands =
 		ServerflagsCommand ();
 	if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
+	if (self.impulse == 254)
+		InvisCheat();
 	if (self.impulse == 255)
 		QuadCheat ();
 

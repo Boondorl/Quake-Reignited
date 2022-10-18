@@ -252,7 +252,7 @@ float() shal_checkatk =
 		return FALSE;
 	
 	self.attack_state = AS_MISSILE;
-	SUB_AttackFinished(1.3+random()*0.3, 1.1);
+	SUB_AttackFinished(1.3+random()*0.3, 1.1, FALSE);
 	return TRUE;
 };
 

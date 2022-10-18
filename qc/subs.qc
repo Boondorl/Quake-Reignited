@@ -307,14 +307,14 @@ float(entity targ) HasInvisible;
 in nightmare mode, all attack_finished times become 0
 some monsters refire twice automatically
 */
-void(float normal, float nightmare) SUB_AttackFinished =
+void(float normal, float nightmare, float ignore_invis) SUB_AttackFinished =
 {
 	if (skill == 3)
 		self.attack_finished = time + nightmare;
 	else
 		self.attack_finished = time + normal;
 	
-	if (self.attack_finished < time + 3)
+	if (!ignore_invis && self.attack_finished < time + 3)
 	{
 		if (HasInvisible(self.enemy))
 			self.attack_finished = time + 3;

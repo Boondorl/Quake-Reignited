@@ -84,6 +84,7 @@ void() plat_go_up =
 {
 	sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	self.state = STATE_UP;
+	self.special = FALSE;
 	SUB_CalcMove (self.pos1, self.speed, plat_hit_top);
 };
 
@@ -97,7 +98,19 @@ void() plat_center_touch =
 
 	self = self.enemy;
 	if (self.state == STATE_BOTTOM)
-		plat_go_up ();
+	{
+		if (coop & REIGNITED_COOP)
+		{
+			if (!self.special)
+			{
+				self.special = TRUE;
+				self.nextthink = self.ltime + 1;
+				self.think = plat_go_up;
+			}
+		}
+		else
+			plat_go_up ();
+	}
 	else if (self.state == STATE_TOP)
 		// delay going down
 		self.nextthink = self.ltime + 1;

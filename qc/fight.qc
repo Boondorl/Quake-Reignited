@@ -118,7 +118,7 @@ float() CheckAttack =
 			return FALSE;
 		
 		self.attack_state = AS_MISSILE;
-		SUB_AttackFinished (2 + random(), 0);
+		SUB_AttackFinished (2 + random(), 0, FALSE);
 		return TRUE;
 	}
 
@@ -244,7 +244,7 @@ float() SoldierCheckAttack =
 		}
 		
 		self.attack_state = AS_MISSILE;
-		SUB_AttackFinished (0.9+random(), 0.9);
+		SUB_AttackFinished (0.9+random(), 0.9, FALSE);
 		return TRUE;
 	}
 
@@ -290,7 +290,7 @@ float() ShamCheckAttack =
 		return FALSE;
 
 	self.attack_state = AS_MISSILE;
-	SUB_AttackFinished(1.7+random(), 1.7);
+	SUB_AttackFinished(1.7+random(), 1.7, FALSE);
 	return TRUE;
 };
 
@@ -323,6 +323,6 @@ float() OgreCheckAttack =
 		return FALSE;
 
 	self.attack_state = AS_MISSILE;
-	SUB_AttackFinished (1.5+random(), 1.5);
+	SUB_AttackFinished (1.5+random(), 1.5, FALSE);
 	return TRUE;
 };

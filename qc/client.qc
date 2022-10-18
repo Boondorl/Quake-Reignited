@@ -334,7 +334,7 @@ void() changelevel_touch =
 	}
 
 	// don't print the messages in singleplayer
-	if (coop || deathmatch)
+	if (IsCoop() || deathmatch)
 	{
 		bprint(other.netname);
 		bprint(" exited the level\n");
@@ -379,17 +379,22 @@ void() trigger_changelevel =
 =============================================================================
 */
 
+float() IsCoop =
+{
+	return coop & (REIGNITED_COOP|CLASSIC_COOP);
+};
+
 void() set_suicide_frame;
 
 // called by ClientKill and DeadThink
 void() respawn =
 {
-	if (coop)
+	if (IsCoop())
 	{
 		// make a copy of the dead body for appearances sake
 		CopyToBodyQue (self);
 		// get the spawn parms as they were at level start
-		if (coop == 1)
+		if (coop & REIGNITED_COOP)
 			SetRespawnParms ();
 		else
 			setspawnparms (self);
@@ -459,7 +464,7 @@ entity() SelectSpawnPoint =
 		return spot;
 
 	// choose a info_player_deathmatch point
-	if (coop)
+	if (IsCoop())
 	{
 		lastspawn = find(lastspawn, classname, "info_player_coop");
 		if (lastspawn == world)
@@ -522,12 +527,11 @@ called each time a player is spawned
 void() DecodeLevelParms;
 void() PlayerDie;
 
-
 void() PutClientInServer =
 {
 	local	entity spot;
 
-	local float respawning = coop == 1 && self.spawned;
+	local float respawning = (coop & REIGNITED_COOP) && self.spawned;
 	if (respawning)
 	{
 		// respawn where we died, but only if it's safe
@@ -621,10 +625,18 @@ void() PutClientInServer =
 
 	player_stand1 ();
 
-	if (deathmatch || coop)
+	if (deathmatch || IsCoop())
 	{
 		makevectors(self.angles);
 		spawn_tfog (self.origin + v_forward*20);
+	}
+	
+	if (coop & REIGNITED_COOP)
+	{
+		if (currentKey1)
+			self.items |= IT_KEY1;
+		if (currentKey2)
+			self.items |= IT_KEY2;
 	}
 
 	spawn_tdeath (self.origin, self);
@@ -781,7 +793,7 @@ void() PlayerDeathThink =
 			self.velocity = forward * normalize(self.velocity);
 	}
 	
-	if (coop == 1 && skill == 3) // no respawning on nightmare coop
+	if (IsCoop() && (coop & DISABLE_RESPAWN)) // no respawning on nightmare coop
 		return;
 
 	// wait for all buttons released
@@ -1054,7 +1066,6 @@ void() CheckPowerups =
 			self.invisible_sound = time + ((random() * 3) + 1);
 		}
 
-
 		if (self.invisible_finished < time + 3)
 		{
 			if (self.invisible_time == 1)
@@ -1240,7 +1251,6 @@ void() PlayerPostThink =
 	CheckPowerups ();
 };
 
-
 /*
 ===========
 ClientConnect
@@ -1250,6 +1260,8 @@ called when a player connects to a server
 */
 void() ClientConnect =
 {
+	++player_count;
+	
 	bprint (self.netname);
 	bprint (" entered the game\n");
 
@@ -1274,6 +1286,7 @@ void() ClientDisconnect =
 	// since they aren't *really* leaving
 
 	// let everyone else know
+	--player_count;
 	bprint (self.netname);
 	bprint (" left the game with ");
 	bprint (ftos(self.frags));

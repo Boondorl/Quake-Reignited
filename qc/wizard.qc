@@ -257,7 +257,7 @@ float()	WizardCheckAttack =
 			return FALSE;
 		
 		self.attack_state = AS_MISSILE;
-		SUB_AttackFinished(1+random(), 1);
+		SUB_AttackFinished(1+random(), 1, FALSE);
 		return TRUE;
 	}
 

@@ -275,8 +275,38 @@ void() door_touch =
 		}
 		return;
 	}
-
-	other.items = other.items - self.items;
+	
+	if (coop & REIGNITED_COOP)
+	{
+		if (self.items & IT_KEY1)
+		{
+			if (currentKey1)
+			{
+				currentKey1.solid = SOLID_NOT;
+				currentKey1.model = string_null;
+				currentKey1 = world;
+			}
+		}
+		else if (self.items & IT_KEY2)
+		{
+			if (currentKey2)
+			{
+				currentKey2.solid = SOLID_NOT;
+				currentKey2.model = string_null;
+				currentKey2 = world;
+			}
+		}
+		
+		local entity p = find(world, classname, "player");
+		while (p)
+		{
+			p.items -= (p.items & self.items);
+			p = find(p, classname, "player");
+		}
+	}
+	else
+		other.items -= self.items;
+	
 	self.touch = SUB_Null;
 	if (self.enemy)
 		// get paired door

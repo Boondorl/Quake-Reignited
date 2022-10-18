@@ -141,7 +141,7 @@ void() sham_smash12    =[      $smash12,      sham_run1	   ]
 		{
 			if (visible(self.enemy, FALSE))
 			{
-				SUB_AttackFinished(1.7+random(), 1.7);
+				SUB_AttackFinished(1.7+random(), 1.7, FALSE);
 				self.think = sham_magic1;
 			}
 		}
@@ -166,7 +166,7 @@ void(void() next) CheckCombo =
 		{
 			if (visible(self.enemy, FALSE))
 			{
-				SUB_AttackFinished(1.7+random(), 1.7);
+				SUB_AttackFinished(1.7+random(), 1.7, FALSE);
 				self.think = sham_magic1;
 			}
 		}

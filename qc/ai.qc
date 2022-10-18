@@ -220,7 +220,7 @@ void() HuntTarget =
 	self.think = self.th_run;
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 	self.nextthink = time + 0.1;
-	SUB_AttackFinished (0.5, 0.2);	// wait a while before first attack
+	SUB_AttackFinished (0.5, 0.2, TRUE);	// wait a while before first attack
 };
 
 void() SightSound =
@@ -261,6 +261,8 @@ void() SightSound =
 		sound (self, CHAN_VOICE, "shalrath/sight.wav", 1, ATTN_NORM);
 };
 
+float() IsCoop;
+
 void() FoundTarget =
 {
 	if (self.enemy.classname == "player")
@@ -270,10 +272,10 @@ void() FoundTarget =
 	}
 
 	self.show_hostile = time + 1;		// wake up other monsters
+	self.sight_finished = time + 2; // make sure idle sounds don't interrupt waking up
 	self.switch_time = time + 3;
 	self.last_seen_time = time + 3;
 	self.search_time = time + 5;
-	self.sight_finished = time + 2; // make sure idle sounds don't interrupt waking up
 
 	SightSound ();
 	HuntTarget ();
@@ -665,7 +667,7 @@ void(float dist) ai_run =
 		self.last_seen_time = time + 3;
 
 	// look for other coop players
-	if (self.search_time <= time && (coop || (self.enemy.flags & FL_MONSTER)))
+	if (self.search_time <= time && (IsCoop() || (self.enemy.flags & FL_MONSTER)))
 	{
 		if (FindTarget ())
 			return;
@@ -690,7 +692,7 @@ void(float dist) ai_run =
 
 	self.in_attack = FALSE;
 	if (self.last_seen_time <= time)
-		SUB_AttackFinished(0.3, 0.15);
+		SUB_AttackFinished(0.3, 0.15, TRUE);
 	
 	if (CheckAnyAttack ())
 	{

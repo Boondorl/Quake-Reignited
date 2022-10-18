@@ -275,7 +275,7 @@ float() army_refire =
 	if (!army_los())
 		return FALSE;
 	
-	SUB_AttackFinished (0.6+random(), 0.6);
+	SUB_AttackFinished (0.6+random(), 0.6, FALSE);
 	return TRUE;
 };
 
