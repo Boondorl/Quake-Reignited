@@ -737,7 +737,7 @@ float(entity targ, float range) CheckBodyBlocking =
 	return CheckCollision(self.origin, dir, dist, offset_y, -offset_x);
 };
 
-float(vector orig, vector dir, float dist) CheckCeiling =
+float(vector orig, vector dir, float dist, entity ignore) CheckCeiling =
 {
 	if (!self.block_ent)
 	{
@@ -746,7 +746,8 @@ float(vector orig, vector dir, float dist) CheckCeiling =
 	}
 	
 	local float old_solid = self.solid;
-	self.solid = SOLID_NOT;
+	local float old_ignore_solid = ignore.solid;
+	self.solid = ignore.solid = SOLID_NOT;
 	
 	self.block_ent.solid = SOLID_SLIDEBOX;
 	self.block_ent.movetype = MOVETYPE_STEP;
@@ -767,6 +768,7 @@ float(vector orig, vector dir, float dist) CheckCeiling =
 	
 	self = old;
 	self.solid = old_solid;
+	ignore.solid = old_ignore_solid;
 	
 	self.block_ent.solid = SOLID_NOT;
 	self.block_ent.movetype = MOVETYPE_NONE;
@@ -777,6 +779,39 @@ float(vector orig, vector dir, float dist) CheckCeiling =
 
 float(entity targ) CheckFloor =
 {
+	if (!self.block_ent)
+	{
+		self.block_ent = spawn();
+		setsize(self.block_ent, self.mins, self.maxs);
+	}
+	
+	self.block_ent.solid = self.solid;
+	self.block_ent.movetype = self.movetype;
+	self.block_ent.flags = self.flags;
+	self.block_ent.flags -= (self.block_ent.flags & FL_MONSTER);
+	
+	local float old_solid = self.solid;
+	local float old_targ_solid = targ.solid;
+	self.solid = targ.solid = SOLID_NOT;
+	
+	setorigin(self.block_ent, self.origin);
+	
+	local entity old = self;
+	self = self.block_ent;
+	
+	local float passed = walkmove(vectoyaw(targ.origin-self.origin), 20);
+	
+	self = old;
+	self.solid = old_solid;
+	targ.solid = old_targ_solid;
+	
+	self.block_ent.solid = SOLID_NOT;
+	self.block_ent.movetype = MOVETYPE_NONE;
+	self.block_ent.flags = 0;
+	
+	if (!passed)
+		return FALSE;
+	
 	local vector dir = targ.origin - self.origin;
 	dir_z = targ.origin_z+targ.mins_z - (self.origin_z+self.mins_z);
 	
@@ -808,7 +843,7 @@ float(entity targ, float leap_range) CheckLeap =
 	if (!CheckBodyBlocking(targ, leap_range))
 		return FALSE;
 	
-	return CheckCeiling(self.origin + '0 0 1'*self.maxs_z, normalize(self.enemy.origin-self.origin), Min(self.size.x,self.size.y));
+	return CheckCeiling(self.origin + '0 0 1'*self.maxs_z, normalize(targ.origin-self.origin), Min(self.size.x,self.size.y), targ);
 };
 
 void(void() t, float spd, float jmp) LeapAttack =
