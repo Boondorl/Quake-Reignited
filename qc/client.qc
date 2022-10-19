@@ -436,6 +436,7 @@ void() ClientKill =
 	bprint (" got bored with life\n");
 	self.frags = self.frags - 2;	// extra penalty
 	self.invincible_finished = 0;
+	self.spawned = FALSE;
 	self.flags -= (self.flags & FL_GODMODE);
 	T_Damage(self, world, world, 50000, 0, TRUE);
 };
@@ -531,42 +532,31 @@ void() PutClientInServer =
 {
 	local	entity spot;
 
-	local float respawning = (coop & REIGNITED_COOP) && (coop & RESPAWN_IN_PLACE) && self.spawned;
-	if (respawning)
+	local float respawning = (coop & REIGNITED_COOP) && self.spawned;
+	if (respawning && (coop & RESPAWN_IN_PLACE))
 	{
 		// respawn where we died, but only if it's safe
-		local float type = pointcontents(self.origin);
+		local float type = pointcontents(self.death_position);
 		if (type == CONTENT_SLIME || type == CONTENT_LAVA || type == CONTENT_SOLID)
 			spot = SelectSpawnPoint();
 		else
 		{
-			local float in_water = type == CONTENT_WATER;
-			local float safe = in_water;
+			local float safe = type == CONTENT_WATER;
 			if (!safe)
 			{
-				traceline(self.origin, self.origin+'0 0 -500', TRUE, self);
+				traceline(self.death_position, self.death_position+'0 0 -500', TRUE, self);
 				type = pointcontents(trace_endpos);
 				if (trace_fraction < 1 && type != CONTENT_SLIME && type != CONTENT_LAVA)
-				{
 					safe = TRUE;
-					in_water = type == CONTENT_WATER;
-				}
 			}
 			
 			if (!safe)
 				spot = SelectSpawnPoint();
 			else
 			{
-				self.velocity = self.avelocity = '0 0 0';
 				self.angles = '0 1 0' * self.v_angle_y;
-				
-				if (!in_water)
-				{
-					local vector s = trace_endpos;
-					s_z -= self.mins_z;
-					
-					setorigin(self, s);
-				}
+				setorigin(self, self.death_position);
+				self.death_position = '0 0 0';
 				
 				spot = self;
 			}
@@ -576,6 +566,7 @@ void() PutClientInServer =
 		spot = SelectSpawnPoint ();
 
 	self.spawned = TRUE;
+	self.velocity = self.avelocity = '0 0 0';
 	self.classname = "player";
 	self.health = 100;
 	self.takedamage = DAMAGE_AIM;

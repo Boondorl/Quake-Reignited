@@ -110,6 +110,8 @@ void(entity targ, entity attacker) Killed =
 {
 	local entity oself = self;
 	self = targ;
+	
+	self.death_position = self.origin;
 
 	if (self.health < -99)
 		// don't let sbar look bad if a player

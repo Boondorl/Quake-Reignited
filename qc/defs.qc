@@ -446,6 +446,7 @@ float		skill;
 //================================================
 
 .string		killtarget;
+.vector		death_position;
 
 //
 // quakeed fields
