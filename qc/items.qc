@@ -515,6 +515,30 @@ weapon_touch
 */
 float() W_BestWeapon;
 
+void(entity weap, entity responsible) GiveWeapon =
+{
+	local float hadweap = self.items & weap.weapon;
+	self.items |= weap.weapon;
+	AddAmmo(self, weap.aflag, weap.cnt);
+	
+	if (!hadweap && self == responsible)
+	{
+		if (deathmatch)
+			Deathmatch_Weapon(self.weapon, weap.weapon);
+		else if (self.waterlevel <= 1 || weap.weapon != IT_LIGHTNING)
+			self.weapon = weap.weapon;
+	}
+	
+	W_SetCurrentAmmo();
+	
+	sprint (self, "Picked up a ");
+	sprint (self, weap.netname);
+	sprint (self, "\n");
+	
+	sound (self, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
+	stuffcmd (self, "bf\n");
+};
+
 void() weapon_touch =
 {
 	if (other.health <= 0 || !(other.flags & FL_CLIENT))
@@ -534,31 +558,28 @@ void() weapon_touch =
 			return;
 	}
 	
-	local float hadweap = other.items & self.weapon;
-	other.items |= self.weapon;
-	AddAmmo(other, self.aflag, self.cnt);
-	
-	local float weap = self.weapon;
 	local entity o = self;
 	
-	self = other;
-	if (!hadweap)
+	// Weapons are more important so make sure they're given to everyone
+	if ((coop & REIGNITED_COOP) && (self.target != string_null || (coop & SHARE_WEAPONS)))
 	{
-		if (deathmatch)
-			Deathmatch_Weapon(self.weapon, weap);
-		else if (self.waterlevel <= 1 || weap != IT_LIGHTNING)
-			self.weapon = weap;
+		local entity p = find(world, classname, "player");
+		
+		while (p)
+		{
+			self = p;
+			GiveWeapon(o, other);
+			
+			p = find(p, classname, "player");
+		}
+	}
+	else
+	{
+		self = other;
+		GiveWeapon(o, self);
 	}
 	
-	W_SetCurrentAmmo();
 	self = o;
-
-	sprint (other, "Picked up a ");
-	sprint (other, self.netname);
-	sprint (other, "\n");
-	// weapon touch sound
-	sound (other, CHAN_ITEM, "weapons/pkup.wav", 1, ATTN_NORM);
-	stuffcmd (other, "bf\n");
 	
 	if (deathmatch == 1)
 	{
@@ -568,12 +589,12 @@ void() weapon_touch =
 
 	activator = other;
 	SUB_UseTargets();			// fire all targets / killtargets
-	if (!(coop & REIGNITED_COOP) || self.target != string_null)
+	if (!(coop & REIGNITED_COOP) || self.target != string_null || (coop & SHARE_WEAPONS))
 	{
 		self.model = string_null;
 		self.solid = SOLID_NOT;
 	}
-	else if (coop & REIGNITED_COOP)
+	else
 	{
 		AddPickedUp(other);
 		++self.special;
