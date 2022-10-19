@@ -552,7 +552,7 @@ void() weapon_touch =
 	
 	if (other.items & self.weapon)
 	{
-		if (deathmatch == 2)
+		if (deathmatch == 2 || (coop & CLASSIC_COOP))
 			return;
 		if (!CheckAmmoPickup(other, self.aflag))
 			return;
@@ -589,6 +589,9 @@ void() weapon_touch =
 
 	activator = other;
 	SUB_UseTargets();			// fire all targets / killtargets
+	if (deathmatch == 2 || (coop & CLASSIC_COOP))
+		return;
+	
 	if (!(coop & REIGNITED_COOP) || self.target != string_null || (coop & SHARE_WEAPONS))
 	{
 		self.model = string_null;
