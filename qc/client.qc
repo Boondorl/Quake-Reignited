@@ -531,7 +531,7 @@ void() PutClientInServer =
 {
 	local	entity spot;
 
-	local float respawning = (coop & REIGNITED_COOP) && self.spawned;
+	local float respawning = (coop & REIGNITED_COOP) && (coop & RESPAWN_IN_PLACE) && self.spawned;
 	if (respawning)
 	{
 		// respawn where we died, but only if it's safe

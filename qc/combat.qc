@@ -281,7 +281,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float pain, f
 {
 	if (!targ.takedamage)
 		return;
-	if (IsCoop() && (coop & DISABLE_FRIENDLY_FIRE))
+	if (IsCoop() && (coop & DISABLE_FRIENDLY_FIRE) && targ != attacker)
 	{
 		if (targ.classname == "player" && attacker.classname == "player")
 			return;

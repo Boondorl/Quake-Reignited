@@ -453,6 +453,7 @@ float		skill;
 .float		light_lev;		// not used by game, but parsed by light util
 .float		style;
 
+float		RESPAWN_IN_PLACE	  = 32;
 float		DISABLE_FRIENDLY_FIRE = 16;
 float		DISABLE_RESPAWN		  = 8;
 float		REIGNITED_COOP 		  = 1;
