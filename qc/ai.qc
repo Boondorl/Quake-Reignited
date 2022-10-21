@@ -214,13 +214,15 @@ float(entity targ) infront =
 
 //============================================================================
 
-void() HuntTarget =
+void(float wake_up) HuntTarget =
 {
 	self.goalentity = self.enemy;
-	self.think = self.th_run;
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
-	self.nextthink = time + 0.1;
-	SUB_AttackFinished (0.5, 0.2, TRUE);	// wait a while before first attack
+	if (wake_up)
+	{
+		SUB_AttackFinished (0.5, 0.2, TRUE);	// wait a while before first attack
+		self.th_run();
+	}
 };
 
 void() SightSound =
@@ -263,7 +265,7 @@ void() SightSound =
 
 float() IsCoop;
 
-void() FoundTarget =
+void(float wake_up) FoundTarget =
 {
 	if (self.enemy.classname == "player")
 	{	// let other monsters see this monster for a while
@@ -278,7 +280,7 @@ void() FoundTarget =
 	self.search_time = time + 5;
 
 	SightSound ();
-	HuntTarget ();
+	HuntTarget (wake_up);
 };
 
 void(string snd, float chance) IdleSound =
@@ -358,6 +360,7 @@ float() FindTarget =
 	//
 	// got one
 	//
+	local float had_enemy = self.enemy != world;
 	self.enemy = client;
 	if (self.enemy.classname != "player")
 	{
@@ -369,7 +372,7 @@ float() FindTarget =
 		}
 	}
 
-	FoundTarget ();
+	FoundTarget (!had_enemy);
 
 	return TRUE;
 };
@@ -638,23 +641,43 @@ float crandom();
 void(float dist) ai_run =
 {
 	movedist = dist;
+	
 	// see if the enemy is dead
 	if (self.enemy.health <= 0)
 	{
-		self.enemy = world;
-		// FIXME: look all around for other targets
-		if (self.oldenemy.health > 0)
+		if (!FindTarget())
 		{
-			self.enemy = self.oldenemy;
-			HuntTarget ();
-		}
-		else
-		{
-			if (self.movetarget)
-				self.th_walk ();
+			self.enemy = world;
+			
+			if (self.oldenemy.health > 0)
+			{
+				self.enemy = self.oldenemy;
+				FoundTarget (FALSE);
+			}
 			else
-				self.th_stand ();
-			return;
+			{
+				if (self.movetarget)
+					self.th_walk ();
+				else
+					self.th_stand ();
+				
+				return;
+			}
+		}
+	}
+	
+	// look for other coop players
+	if (self.search_time <= time && (IsCoop() || (self.enemy.flags & FL_MONSTER)))
+	{
+		if (!FindTarget ())
+		{
+			if (self.oldenemy.health > 0)
+			{
+				self.enemy = self.oldenemy;
+				FoundTarget(FALSE);
+			}
+			else
+				self.search_time = time + 0.5;
 		}
 	}
 
@@ -665,15 +688,6 @@ void(float dist) ai_run =
 	enemy_vis = visible(self.enemy, FALSE);
 	if (enemy_vis || self.in_attack)
 		self.last_seen_time = time + 3;
-
-	// look for other coop players
-	if (self.search_time <= time && (IsCoop() || (self.enemy.flags & FL_MONSTER)))
-	{
-		if (FindTarget ())
-			return;
-		
-		self.search_time = time + 0.5;
-	}
 
 	enemy_infront = infront(self.enemy);
 	enemy_range = range(self.enemy);

@@ -381,11 +381,11 @@ void(entity targ, entity inflictor, entity attacker, float damage, float pain, f
 			self.search_time = time + 3;
 		else if (CanSwitchTo(attacker))
 		{
-			// get mad unless of the same class
+			local float had_enemy = self.enemy != world;
 			if (self.enemy.classname == "player")
 				self.oldenemy = self.enemy;
 			self.enemy = attacker;
-			FoundTarget();
+			FoundTarget(!had_enemy);
 		}
 	}
 

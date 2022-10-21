@@ -53,8 +53,7 @@ void() monster_use =
 	// delay reaction so if the monster is teleported, its sound is still
 	// heard
 	self.enemy = activator;
-	self.nextthink = time + 0.1;
-	self.think = FoundTarget;
+	FoundTarget(TRUE);
 };
 
 /*
