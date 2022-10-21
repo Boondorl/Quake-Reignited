@@ -476,7 +476,7 @@ float		CLASSIC_COOP		  = 2;
 .float()	th_checkrefire;
 .float()	th_checklos;
 
-.entity		oldenemy;		// mad at this player before taking damage
+.entity		queued_enemy;		// this player is trying to piss us off
 
 .float		speed;
 
@@ -503,6 +503,7 @@ float		CLASSIC_COOP		  = 2;
 .float  gib_health;
 .float  melee_range;
 .float  in_attack; // to prevent turning towards invisible targets
+.float 	in_pain;
 .entity block_ent; // for easy body checking
 
 float	AS_STRAIGHT		= 1;

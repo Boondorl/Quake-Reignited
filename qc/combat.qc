@@ -173,7 +173,7 @@ AccumulatePain
 */
 void(entity targ, float pain, entity attacker, float damage) AccumulatePain =
 {
-	if (targ.pain_finished > time || targ.pain_threshold <= 0 || pain <= 0 || (targ.touch && targ.touch != SUB_Null))
+	if (targ.pain_finished > time || self.in_pain || targ.pain_threshold <= 0 || pain <= 0 || (targ.touch && targ.touch != SUB_Null))
 		return;
 	if (targ.classname == "player")
 		return;
@@ -181,10 +181,16 @@ void(entity targ, float pain, entity attacker, float damage) AccumulatePain =
 	targ.pain_amount += pain;
 	if (targ.pain_amount >= targ.pain_threshold)
 	{
+		self.in_pain = TRUE;
 		targ.pain_amount = 0;
+		targ.in_attack = FALSE;
 		targ.attack_state = AS_STRAIGHT; // cancel whatever attack they're in
 		targ.th_pain(attacker, damage);
+		
+		local entity o = self;
+		self = targ;
 		SUB_AttackFinished(0.8, 0.8, TRUE);
+		self = o;
 	}
 }
 
@@ -381,11 +387,17 @@ void(entity targ, entity inflictor, entity attacker, float damage, float pain, f
 			self.search_time = time + 3;
 		else if (CanSwitchTo(attacker))
 		{
-			local float had_enemy = self.enemy != world;
-			if (self.enemy.classname == "player")
-				self.oldenemy = self.enemy;
-			self.enemy = attacker;
-			FoundTarget(!had_enemy);
+			if (self.in_attack || self.in_pain)
+			{
+				if (attacker.classname == "player" || self.queued_enemy.classname != "player")
+					self.queued_enemy = attacker;
+			}
+			else
+			{
+				local float had_enemy = self.enemy != world;
+				self.enemy = attacker;
+				FoundTarget(!had_enemy);
+			}
 		}
 	}
 

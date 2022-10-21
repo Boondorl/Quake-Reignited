@@ -267,6 +267,8 @@ float() IsCoop;
 
 void(float wake_up) FoundTarget =
 {
+	self.queued_enemy = world;
+	
 	if (self.enemy.classname == "player")
 	{	// let other monsters see this monster for a while
 		sight_entity = self;
@@ -642,43 +644,41 @@ void(float dist) ai_run =
 {
 	movedist = dist;
 	
+	self.in_pain = FALSE;
+	if (self.queued_enemy)
+	{
+		if (self.queued_enemy != self.enemy && self.queued_enemy.health > 0)
+		{
+			self.enemy = self.queued_enemy;
+			FoundTarget(FALSE);
+		}
+		
+		self.queued_enemy = world;
+	}
+	
 	// see if the enemy is dead
 	if (self.enemy.health <= 0)
 	{
 		if (!FindTarget())
 		{
 			self.enemy = world;
+			self.in_attack = FALSE;
+			self.attack_state = AS_STRAIGHT;
 			
-			if (self.oldenemy.health > 0)
-			{
-				self.enemy = self.oldenemy;
-				FoundTarget (FALSE);
-			}
+			if (self.movetarget)
+				self.th_walk ();
 			else
-			{
-				if (self.movetarget)
-					self.th_walk ();
-				else
-					self.th_stand ();
-				
-				return;
-			}
+				self.th_stand ();
+			
+			return;
 		}
 	}
 	
 	// look for other coop players
-	if (self.search_time <= time && (IsCoop() || (self.enemy.flags & FL_MONSTER)))
+	if (!self.in_attack && self.search_time <= time && (IsCoop() || (self.enemy.flags & FL_MONSTER)))
 	{
 		if (!FindTarget ())
-		{
-			if (self.oldenemy.health > 0)
-			{
-				self.enemy = self.oldenemy;
-				FoundTarget(FALSE);
-			}
-			else
-				self.search_time = time + 0.5;
-		}
+			self.search_time = time + 0.5;
 	}
 
 	// wake up other monsters
