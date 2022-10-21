@@ -249,7 +249,7 @@ void() sham_melee =
 float() sham_los =
 {
 	traceline(self.origin+'0 0 40', self.enemy.origin+'0 0 16', FALSE, self);
-	return trace_ent == self.enemy;
+	return trace_ent == self.enemy || trace_ent.classname == "player";
 };
 
 //============================================================================

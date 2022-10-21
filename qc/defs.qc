@@ -498,10 +498,7 @@ float		CLASSIC_COOP		  = 2;
 .entity special_ent;
 .float  pain_amount; // reworked pain
 .float  pain_threshold;
-.float	pain;
-.float  explosion_pain;
 .float  gib_health;
-.float  melee_range;
 .float  in_attack; // to prevent turning towards invisible targets
 .float 	in_pain;
 .entity block_ent; // for easy body checking

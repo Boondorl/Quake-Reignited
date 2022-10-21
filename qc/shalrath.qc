@@ -241,7 +241,7 @@ void() ShalMissileTouch =
 float() shal_los = 
 {
 	traceline(self.origin+'0 0 10', self.enemy.origin+'0 0 10', FALSE, self);
-	return trace_ent == self.enemy;
+	return trace_ent == self.enemy || trace_ent.classname == "player";
 };
 
 float() shal_checkatk =

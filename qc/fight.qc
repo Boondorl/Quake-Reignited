@@ -198,7 +198,7 @@ void() ai_melee =
 		// removed before stroke
 		return;
 
-	MeleeAttack(5, self.melee_range, self.pain);
+	MeleeAttack(5, 80, 20);
 };
 
 
@@ -208,7 +208,7 @@ void() ai_melee_side =
 		return;		// removed before stroke
 
 	ai_charge_side();
-	MeleeAttack(5, self.melee_range, self.pain);
+	MeleeAttack(5, 80, 20);
 };
 
 

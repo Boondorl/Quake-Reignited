@@ -226,11 +226,11 @@ float(vector orig) WizLOS =
 	
 	local vector o = orig + '0 0 30' + v_forward*14;
 	traceline (o + v_right*14, self.enemy.origin, FALSE, self);
-	if (trace_ent != self.enemy)
+	if (trace_ent != self.enemy && trace_ent.classname != "player")
 		return FALSE;
 	
 	traceline (o - v_right*14, self.enemy.origin, FALSE, self);
-	return trace_ent == self.enemy;
+	return trace_ent == self.enemy || trace_ent.classname == "player";
 };
 
 /*

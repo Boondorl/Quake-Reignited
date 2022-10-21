@@ -267,7 +267,7 @@ float() army_los =
 	makevectors ('0 1 0' * vectoyaw(self.enemy.origin-self.origin));
 	
 	traceline(self.origin + v_forward*15+v_right*8.5+'0 0 16', self.enemy.origin+'0 0 16', FALSE, self);
-	return trace_ent == self.enemy;
+	return trace_ent == self.enemy || trace_ent.classname == "player";
 };
 
 float() army_refire =

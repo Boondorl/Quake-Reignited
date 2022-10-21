@@ -566,7 +566,7 @@ float() crandom;
 float() CheckLoS = 
 {
 	traceline(self.origin, self.enemy.origin, FALSE, self);
-	return trace_ent == self.enemy;
+	return trace_ent == self.enemy || trace_ent.classname == "player";
 };
 
 /*
@@ -708,14 +708,14 @@ vector(vector org, entity e) GetNearestPoint =
 	return point;
 };
 
-float(vector orig, vector dir, float dist, float x_ofs, float y_ofs) CheckCollision =
+float(entity targ, vector orig, vector dir, float dist, float x_ofs, float y_ofs) CheckCollision =
 {
 	local vector o = orig;
 	o_x += x_ofs;
 	o_y += y_ofs;
 	
 	traceline(o, o + dir*dist, FALSE, self);
-	return trace_ent == self.enemy || trace_fraction == 1;
+	return trace_ent == targ || trace_fraction == 1 || trace_ent.classname == "player";
 };
 
 /*
@@ -735,7 +735,7 @@ float(entity targ, float range) CheckBodyBlocking =
 	}
 	
 	traceline(self.origin, targ.origin, FALSE, self);
-	if (trace_ent != targ)
+	if (trace_ent != targ && trace_ent.classname != "player")
 		return FALSE;
 	
 	local vector targ_nearest = GetNearestPoint(self.origin, targ);
@@ -745,10 +745,10 @@ float(entity targ, float range) CheckBodyBlocking =
 	local vector dir = normalize(targ_nearest - self.origin);
 	local vector offset = self_nearest - self.origin;
 	
-	if (!CheckCollision(self.origin, dir, dist, -offset_y, offset_x))
+	if (!CheckCollision(targ, self.origin, dir, dist, -offset_y, offset_x))
 		return FALSE;
 	
-	return CheckCollision(self.origin, dir, dist, offset_y, -offset_x);
+	return CheckCollision(targ, self.origin, dir, dist, offset_y, -offset_x);
 };
 
 float(vector orig, vector dir, float dist, entity ignore) CheckCeiling =
@@ -940,7 +940,7 @@ float(entity targ, float range) CheckMeleeRange =
 		return FALSE;
 	
 	traceline(self.origin, targ.origin, FALSE, self);
-	return trace_ent == targ;
+	return trace_ent == targ || trace_ent.classname == "player";
 };
 
 /*

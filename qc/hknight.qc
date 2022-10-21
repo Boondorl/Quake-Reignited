@@ -478,7 +478,7 @@ void() hknight_melee =
 float() hknight_checklos =
 {
 	traceline(self.origin+self.mins+self.size*0.5, self.enemy.origin, FALSE, self);
-	return trace_ent == self.enemy;
+	return trace_ent == self.enemy || trace_ent.classname == "player";
 };
 
 float() hknight_checkatk =

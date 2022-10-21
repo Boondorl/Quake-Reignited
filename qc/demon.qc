@@ -251,27 +251,6 @@ DEMON
 
 /*
 ==============
-CheckDemonMelee
-
-Returns TRUE if a melee attack would hit right now
-==============
-*/
-float()	CheckDemonMelee =
-{
-	if (vlen(self.enemy.origin - self.origin) <= 100)
-	{
-		traceline(self.origin, self.enemy.origin, FALSE, self);
-		if (trace_ent != self.enemy)
-			return FALSE;
-			
-		return TRUE;
-	}
-	
-	return FALSE;
-};
-
-/*
-==============
 CheckDemonJump
 
 ==============

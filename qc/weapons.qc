@@ -525,7 +525,6 @@ void() W_FireRocket =
 	local entity missile = FireProjectile(self.origin, GetAimDirection(self.origin, 1000), 1250, 3.5, "progs/missile.mdl");
 	missile.classname = "missile";
 	missile.touch = T_MissileTouch;
-	missile.pain = missile.explosion_pain = 50;
 };
 
 /*

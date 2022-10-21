@@ -55,16 +55,54 @@ $frame shockc9 shockc10
 
 
 void(vector p) boss_missile;
+void() boss_missile1;
 
 void() boss_face =
 {
 	// go for another player if multi player
-	if (self.enemy.health <= 0 || random() < 0.02)
+	if (IsCoop() && (!self.enemy || random() < 0.02))
 	{
-		self.enemy = find(self.enemy, classname, "player");
-		if (!self.enemy)
-			self.enemy = find(self.enemy, classname, "player");
+		local float had_enemy = self.enemy != world;
+		
+		local float alive_players;
+		local entity alive;
+		local entity p = find(world, classname, "player");
+		while (p)
+		{
+			if (p.health > 0)
+			{
+				alive = p;
+				++alive_players;
+			}
+			
+			p = find(p, classname, "player");
+		}
+		
+		if (alive_players == 1)
+			self.enemy = alive;
+		else if (alive_players > 1)
+		{
+			p = find(world, classname, "player");
+			local float chance = 1 / alive_players;
+			while (p)
+			{
+				if (p.health > 0 && random() < chance)
+				{
+					self.enemy = p;
+					break;
+				}
+				
+				p = find(p, classname, "player");
+			}
+			
+			if (!self.enemy)
+				self.enemy = alive;
+		}
+		
+		if (!had_enemy && self.enemy)
+			boss_missile1();
 	}
+	
 	ai_face();
 };
 
@@ -220,7 +258,6 @@ void(vector p) boss_missile =
 	
 	local entity missile = FireProjectileAtEnemy(orig, '0 0 0', 500, 0, "progs/lavaball.mdl", skill > 1, FALSE);
 	missile.classname = "missile";
-	missile.pain = missile.explosion_pain = 50;
 	missile.avelocity = '200 100 300';
 	missile.touch = T_MissileTouch;
 
@@ -228,7 +265,10 @@ void(vector p) boss_missile =
 
 	// check for dead enemy
 	if (self.enemy.health <= 0)
+	{
+		self.enemy = world;
 		boss_idle1 ();
+	}
 };
 
 
