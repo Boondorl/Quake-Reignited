@@ -649,6 +649,9 @@ void(float dist) ai_run =
 	{
 		if (self.queued_enemy != self.enemy && self.queued_enemy.health > 0)
 		{
+			if (self.enemy.classname == "player")
+				self.last_enemy = self.enemy;
+				
 			self.enemy = self.queued_enemy;
 			FoundTarget(FALSE);
 		}
@@ -662,15 +665,30 @@ void(float dist) ai_run =
 		if (!FindTarget())
 		{
 			self.enemy = world;
-			self.in_attack = FALSE;
-			self.attack_state = AS_STRAIGHT;
 			
-			if (self.movetarget)
-				self.th_walk ();
-			else
-				self.th_stand ();
+			if (self.last_enemy)
+			{
+				if (self.last_enemy.health > 0)
+				{
+					self.enemy = self.last_enemy;
+					FoundTarget(FALSE);
+				}
+				
+				self.last_enemy = world;
+			}
 			
-			return;
+			if (!self.enemy)
+			{
+				self.in_attack = FALSE;
+				self.attack_state = AS_STRAIGHT;
+				
+				if (self.movetarget)
+					self.th_walk ();
+				else
+					self.th_stand ();
+				
+				return;
+			}
 		}
 	}
 	

@@ -384,7 +384,12 @@ void(entity targ, entity inflictor, entity attacker, float damage, float pain, f
 	if (self.flags & FL_MONSTER)
 	{
 		if (attacker == self.enemy)
+		{
+			if (self.queued_enemy.classname != "player")
+				self.queued_enemy = world;
+			
 			self.search_time = time + 3;
+		}
 		else if (CanSwitchTo(attacker))
 		{
 			if (self.in_attack || self.in_pain)
@@ -395,6 +400,10 @@ void(entity targ, entity inflictor, entity attacker, float damage, float pain, f
 			else
 			{
 				local float had_enemy = self.enemy != world;
+				
+				if (self.enemy.classname == "player")
+					self.last_enemy = self.enemy;
+				
 				self.enemy = attacker;
 				FoundTarget(!had_enemy);
 			}

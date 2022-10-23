@@ -476,6 +476,7 @@ float		CLASSIC_COOP		  = 2;
 .float()	th_checkrefire;
 .float()	th_checklos;
 
+.entity		last_enemy;
 .entity		queued_enemy;		// this player is trying to piss us off
 
 .float		speed;
