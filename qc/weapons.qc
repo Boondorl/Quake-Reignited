@@ -591,7 +591,10 @@ void(vector org, vector end, float dmg, float pain, float mindist, float mindmg,
 		return;
 	
 	if ((trace_ent.flags & FL_MONSTER) && !trace_ent.is_boss)
+	{
+		trace_ent.in_pain = FALSE;
 		trace_ent.pain_finished = 0;
+	}
 	
 	particle (trace_endpos, '0 0 100', 225, dmg*4);
 	T_Damage(trace_ent, self, self, dmg, pain, FALSE);
