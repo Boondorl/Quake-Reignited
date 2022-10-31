@@ -428,11 +428,13 @@ ignored, while hits of 27 or greater are required to knock down
 */
 void(entity attacker, float take) zombie_pain =
 {
+	self.in_pain = FALSE;
 	if (self.damage_accumulation < 9)
 		return;
 	
 	if (self.damage_accumulation >= 27)
 	{
+		self.in_pain = TRUE;
 		self.pain_finished = time + 2;
 		zombie_paine1();
 		self.special = 0;
