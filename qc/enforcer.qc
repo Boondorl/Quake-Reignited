@@ -329,7 +329,7 @@ void() enf_gib =
 
 void() enf_die =
 {
-	self.ammo_cells = 5;
+	self.ammo_cells = 2;
 	DropBackpack();
 
 	// regular death

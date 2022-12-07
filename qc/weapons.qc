@@ -702,18 +702,20 @@ void() W_FireGrenade =
 	
 	makevectors (self.v_angle);
 	
-	local entity missile = FireProjectile(self.origin, GetAimDirection(self.origin, 1000), 600, 2.5, "progs/grenade.mdl");
+	// 630 is used to keep a similar velocity to vanilla now that it rotates the tragectory
+	local entity missile = FireProjectile(self.origin, GetAimDirection(self.origin, 1000), 630, 2.5, "progs/grenade.mdl");
 	missile.classname = "grenade";
 	missile.movetype = MOVETYPE_BOUNCE;
 	missile.think = GrenadeExplode;
 	missile.touch = GrenadeTouch;
 	missile.avelocity = '300 300 300';
 	
-	local float p = missile.angles_x; // thanks, Kex
-	if (p > 90)
+	local float p = missile.angles_x;
+	if (p > 90) // thanks, Kex
 		p -= 360;
 	
-	missile.velocity_z += 200 * (1 - fabs(p)/90);
+	local float spd = vlen(missile.velocity);
+	missile.velocity = normalize(missile.velocity/spd + v_up*0.3249*(1 - fabs(p)/90)) * spd;
 	missile.angles = vectoangles(missile.velocity);
 	
 	self.punchangle_x = -2;
