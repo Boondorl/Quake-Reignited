@@ -101,25 +101,22 @@ void() sham_run6       =[      $run6,        sham_run1      ]
 	ai_run(20);
 };
 
-void() sham_magic1;
-void() sham_swingr2;
-
 void() sham_smash1     =[      $smash1,       sham_smash2    ]
 {
 	sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM);
-	ai_charge(4);
+	ai_charge(6);
 };
-void() sham_smash2     =[      $smash2,       sham_smash3    ] {ai_charge(12);};
-void() sham_smash3     =[      $smash3,       sham_smash4    ] {ai_charge(12);};
-void() sham_smash4     =[      $smash4,       sham_smash5    ] {ai_charge(10);};
-void() sham_smash5     =[      $smash5,       sham_smash6    ] {ai_charge(8);};
-void() sham_smash6     =[      $smash6,       sham_smash7    ] {ai_charge(4);};
-void() sham_smash7     =[      $smash7,       sham_smash8    ] {ai_charge(4);};
+void() sham_smash2     =[      $smash2,       sham_smash3    ] {ai_charge(18);};
+void() sham_smash3     =[      $smash3,       sham_smash4    ] {ai_charge(24);};
+void() sham_smash4     =[      $smash4,       sham_smash5    ] {ai_charge(22);};
+void() sham_smash5     =[      $smash5,       sham_smash6    ] {ai_charge(18);};
+void() sham_smash6     =[      $smash6,       sham_smash7    ] {ai_charge(12);};
+void() sham_smash7     =[      $smash7,       sham_smash8    ] {ai_charge(6);};
 void() sham_smash8     =[      $smash8,       sham_smash9    ] {ai_charge(4);};
-void() sham_smash9     =[      $smash9,       sham_smash10   ] {ai_charge(4);};
+void() sham_smash9     =[      $smash9,       sham_smash10   ] {ai_charge(2);};
 void() sham_smash10    =[      $smash10,      sham_smash11   ]
 {
-	ai_charge(4);
+	ai_face();
 	MeleeAttack(80, 120, 10000); // has a bit more range
 	if (trace_ent.takedamage)
 	{
@@ -129,55 +126,16 @@ void() sham_smash10    =[      $smash10,      sham_smash11   ]
 		SpawnMeatSpray (self.origin + v_forward*16, crandom() * 100 * v_right);
 	}
 };
-void() sham_smash11    =[      $smash11,      sham_smash12   ] {ai_charge(10);};
-void() sham_smash12    =[      $smash12,      sham_run1	   ]
-{
-	ai_charge(8);
-	++self.cnt;
-	self.special = TRUE;
-	if (self.cnt >= 3)
-	{
-		if (vlen(self.enemy.origin-self.origin) <= 200)
-		{
-			if (visible(self.enemy, FALSE))
-			{
-				SUB_AttackFinished(1.7+random(), 1.7, FALSE);
-				self.think = sham_magic1;
-			}
-		}
-	}
-	else if (CheckMeleeRange(self.enemy, 120))
-	{
-		if (random() > 0.3)
-			self.think = sham_swingr1;
-		else
-			self.think = sham_swingl1;
-	}
-};
-
-void() sham_swingr1;
+void() sham_smash11    =[      $smash11,      sham_smash12   ] {ai_face();};
+void() sham_smash12    =[      $smash12,      sham_run1      ] {ai_face();};
 
 void(void() next) CheckCombo =
 {
-	++self.cnt;
-	if (self.cnt >= 3)
+	if (self.cnt < 2)
 	{
-		if (vlen(self.enemy.origin-self.origin) <= 200)
-		{
-			if (visible(self.enemy, FALSE))
-			{
-				SUB_AttackFinished(1.7+random(), 1.7, FALSE);
-				self.think = sham_magic1;
-			}
-		}
+		if (CheckMeleeRange(self.enemy, 120))
+			self.think = next;
 	}
-	else if (self.cnt == 2 && !self.special)
-	{
-		if (CheckChargeAttack(self.enemy, 0, 160))
-			self.think = sham_smash1;
-	}
-	else if (CheckMeleeRange(self.enemy, 120))
-		self.think = next;
 };
 
 void(float side) ShamClaw =
@@ -205,7 +163,7 @@ void() sham_swingl3 =[      $swingl3,      sham_swingl4   ] {ai_charge(7);};
 void() sham_swingl4 =[      $swingl4,      sham_swingl5   ] {ai_charge(3);};
 void() sham_swingl5 =[      $swingl5,      sham_swingl6   ] {ai_charge(7);};
 void() sham_swingl6 =[      $swingl6,      sham_swingl7   ] {ai_charge(9);};
-void() sham_swingl7 =[      $swingl7,      sham_swingl8   ] {ai_charge(5); ShamClaw(250);};
+void() sham_swingl7 =[      $swingl7,      sham_swingl8   ] {ai_charge(5); ++self.cnt; ShamClaw(250);};
 void() sham_swingl8 =[      $swingl8,      sham_swingl9   ] {ai_charge(4);};
 void() sham_swingl9 =[      $swingl9,      sham_run1  ]
 {
@@ -223,7 +181,7 @@ void() sham_swingr3 =[      $swingr3,      sham_swingr4   ] {ai_charge(14);};
 void() sham_swingr4 =[      $swingr4,      sham_swingr5   ] {ai_charge(7);};
 void() sham_swingr5 =[      $swingr5,      sham_swingr6   ] {ai_charge(3);};
 void() sham_swingr6 =[      $swingr6,      sham_swingr7   ] {ai_charge(6);};
-void() sham_swingr7 =[      $swingr7,      sham_swingr8   ] {ai_charge(6); ShamClaw(-250);};
+void() sham_swingr7 =[      $swingr7,      sham_swingr8   ] {ai_charge(6); ++self.cnt; ShamClaw(-250);};
 void() sham_swingr8 =[      $swingr8,      sham_swingr9   ] {ai_charge(3);};
 void() sham_swingr9 =[      $swingr9,      sham_run1  ]
 {
@@ -233,17 +191,22 @@ void() sham_swingr9 =[      $swingr9,      sham_run1  ]
 
 void() sham_melee =
 {
-	self.cnt = 0;
-	self.special = FALSE;
-	if (CheckChargeAttack(self.enemy, 120, 0)) // clobberin' time
-		sham_smash1();
-	else
+	if (self.special)
 	{
-		if (random() > 0.3)
-			sham_swingr1 ();
-		else
-			sham_swingl1 ();
+		self.special = FALSE;
+		if (CheckChargeAttack(self.enemy, 120, 0)) // clobberin' time
+		{
+			self.cnt = 0;
+			self.special_time = time + 2;
+			sham_smash1();
+			return;
+		}
 	}
+	
+	if (random() > 0.5)
+		sham_swingr1 ();
+	else
+		sham_swingl1 ();
 };
 
 float() sham_los =
@@ -295,6 +258,7 @@ void() CastLightning =
 
 void() sham_magic1     =[      $magic1,       sham_magic2    ]
 {
+	self.cnt = 0;
 	ai_face();
 	sound (self, CHAN_WEAPON, "shambler/sattck1.wav", 1, ATTN_NORM);
 };
@@ -366,6 +330,8 @@ void(entity attacker, float damage)	sham_pain =
 {
 	sound (self, CHAN_VOICE, "shambler/shurt2.wav", 1, ATTN_NORM);
 	SUB_PainFinished(3, 6);
+	self.cnt = 0;
+	self.special_time = time + 2;
 	sham_pain1 ();
 };
 

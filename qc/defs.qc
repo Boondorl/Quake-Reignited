@@ -496,6 +496,7 @@ float		CLASSIC_COOP		  = 2;
 .float  damage_accumulation_time;
 .entity damage_accumulator;
 .float	special; // for misc. usage
+.float  special_time;
 .entity special_ent;
 .float  pain_amount; // reworked pain
 .float  pain_threshold;

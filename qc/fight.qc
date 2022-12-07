@@ -264,19 +264,27 @@ float() sham_los;
 float(entity e, float melee, float charge) CheckChargeAttack;
 float() ShamCheckAttack =
 {
+	if (vlen(self.enemy.origin-self.origin) > 200)
+		self.cnt = 0;
+	
 	if (enemy_range == RANGE_FAR)
 		return FALSE;
 	if (vlen(self.enemy.origin+'0 0 16' - (self.origin+'0 0 40')) > 600)
 		return FALSE;
 
-	if (CheckMeleeRange(self.enemy, 160))
+	if (self.special_time <= time)
 	{
-		if (vlen(self.enemy.origin-self.origin) <= 120)
+		if (CheckChargeAttack(self.enemy, 120, 160))
 		{
+			self.special = TRUE;
 			self.attack_state = AS_MELEE;
 			return TRUE;
 		}
-		else if (CheckChargeAttack(self.enemy, 0, 0))
+	}
+	
+	if (self.cnt < 2)
+	{
+		if (CheckMeleeRange(self.enemy, 120))
 		{
 			self.attack_state = AS_MELEE;
 			return TRUE;
