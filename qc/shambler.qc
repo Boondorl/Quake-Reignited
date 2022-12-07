@@ -365,7 +365,7 @@ void() sham_pain6       =[      $pain6, sham_run1      ] {};
 void(entity attacker, float damage)	sham_pain =
 {
 	sound (self, CHAN_VOICE, "shambler/shurt2.wav", 1, ATTN_NORM);
-	SUB_PainFinished(1, 6);
+	SUB_PainFinished(3, 6);
 	sham_pain1 ();
 };
 
