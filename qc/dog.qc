@@ -85,6 +85,7 @@ void()	Dog_JumpTouch =
 			T_Damage (other, self, self, 20, 50, FALSE);	
 	}
 
+	self.special_time = time + 1;
 	self.think = dog_run1;
 	self.nextthink = time + 0.1;
 };
@@ -116,19 +117,19 @@ void() dog_walk8	=[	$walk8 ,	dog_walk1	] {ai_walk(8);};
 void() dog_run1		=[	$run1  ,	dog_run2	]
 {
 	IdleSound("dog/idle.wav", 0.2);
-	ai_run(16);
+	ai_run(20);
 };
-void() dog_run2		=[	$run2  ,	dog_run3	] {ai_run(32);};
-void() dog_run3		=[	$run3  ,	dog_run4	] {ai_run(32);};
-void() dog_run4		=[	$run4  ,	dog_run5	] {ai_run(20);};
-void() dog_run5		=[	$run5  ,	dog_run6	] {ai_run(64);};
-void() dog_run6		=[	$run6  ,	dog_run7	] {ai_run(32);};
-void() dog_run7		=[	$run7  ,	dog_run8	] {ai_run(16);};
-void() dog_run8		=[	$run8  ,	dog_run9	] {ai_run(32);};
-void() dog_run9		=[	$run9  ,	dog_run10	] {ai_run(32);};
-void() dog_run10	=[	$run10  ,	dog_run11	] {ai_run(20);};
-void() dog_run11	=[	$run11  ,	dog_run12	] {ai_run(64);};
-void() dog_run12	=[	$run12  ,	dog_run1	] {ai_run(32);};
+void() dog_run2		=[	$run2  ,	dog_run3	] {ai_run(40);};
+void() dog_run3		=[	$run3  ,	dog_run4	] {ai_run(40);};
+void() dog_run4		=[	$run4  ,	dog_run5	] {ai_run(25);};
+void() dog_run5		=[	$run5  ,	dog_run6	] {ai_run(80);};
+void() dog_run6		=[	$run6  ,	dog_run7	] {ai_run(40);};
+void() dog_run7		=[	$run7  ,	dog_run8	] {ai_run(20);};
+void() dog_run8		=[	$run8  ,	dog_run9	] {ai_run(40);};
+void() dog_run9		=[	$run9  ,	dog_run10	] {ai_run(40);};
+void() dog_run10	=[	$run10  ,	dog_run11	] {ai_run(25);};
+void() dog_run11	=[	$run11  ,	dog_run12	] {ai_run(80);};
+void() dog_run12	=[	$run12  ,	dog_run1	] {ai_run(40);};
 
 void() dog_atta1	=[	$attack1,	dog_atta2	] {ai_charge(10);};
 void() dog_atta2	=[	$attack2,	dog_atta3	] {ai_charge(10);};
@@ -171,7 +172,10 @@ void() dog_leap9	=[	$leap9,		dog_run1	]
 	if (self.origin != self.oldorigin)
 		self.think = dog_leap9;
 	else
+	{
+		self.special_time = time + 1;
 		self.touch = SUB_Null;
+	}
 		
 	self.oldorigin = self.origin;
 };
@@ -303,10 +307,10 @@ float()	DogCheckAttack =
 		return TRUE;
 	}
 	
-	if (self.attack_finished > time)
+	if (self.attack_finished > time || self.special_time > time)
 		return FALSE;
 
-	if (CheckLeap(self.enemy, 200))
+	if (CheckLeap(self.enemy, 160))
 	{
 		self.attack_state = AS_MISSILE;
 		return TRUE;
@@ -345,6 +349,7 @@ void() monster_dog =
 	self.health = 36;
 	self.gib_health = -54;
 	self.pain_threshold = 18;
+	self.yaw_speed = 30;
 
 	self.th_stand = dog_stand1;
 	self.th_walk = dog_walk1;
