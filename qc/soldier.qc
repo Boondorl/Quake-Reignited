@@ -241,14 +241,21 @@ void() army_fire =
 		angs_x = -angs_x;
 		makevectors (angs);
 		
+		local float x, y;
+		do
+		{
+			x = crandom();
+			y = crandom();
+		} while (x*x + y*y > 1);
+		
 		local vector dir;
 		if (inner > 0)
 		{
-			dir = normalize(v_forward + v_right*inner_spread*crandom() + v_up*inner_spread*crandom());
+			dir = normalize(v_forward + v_right*inner_spread*x + v_up*inner_spread*y);
 			--inner;
 		}
 		else
-			dir = normalize(v_forward + v_right*spread*crandom() + v_up*spread*crandom());
+			dir = normalize(v_forward + v_right*spread*x + v_up*spread*y);
 		
 		missile.fast_velocity = dir * vlen(missile.velocity);
 		missile.velocity = dir * 0.01;

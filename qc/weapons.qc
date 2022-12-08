@@ -400,13 +400,20 @@ void(float shotcount, float inner_shotcount, vector dir, vector spread) FirePell
 	local vector direction;
 	while (shotcount > 0)
 	{
+		local float x, y;
+		do
+		{
+			x = crandom();
+			y = crandom();
+		} while (x*x + y*y > 1);
+		
 		if (inner_shotcount > 0)
 		{
-			direction = normalize(dir + crandom()*inner_spread_x*v_right + crandom()*inner_spread_y*v_up);
+			direction = normalize(dir + x*inner_spread_x*v_right + y*inner_spread_y*v_up);
 			--inner_shotcount;
 		}
 		else
-			direction = normalize(dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up);
+			direction = normalize(dir + x*spread_x*v_right + y*spread_y*v_up);
 
 		PelletAttack (src, direction);
 		--shotcount;
