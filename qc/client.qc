@@ -48,7 +48,7 @@ void() info_intermission = {};
 void() SetRespawnParms =
 {
 	// remove power ups
-	self.items -= (self.items & (IT_INVISIBILITY|IT_INVULNERABILITY|IT_SUIT|IT_QUAD|IT_SUPERHEALTH));
+	self.items -= (self.items & (IT_INVISIBILITY|IT_INVULNERABILITY|IT_SUIT|IT_QUAD|IT_SUPERHEALTH|IT_ARMOR1|IT_ARMOR2|IT_ARMOR3));
 	
 	parm1 = self.items;
 	parm2 = 100;
@@ -75,6 +75,7 @@ void() SetChangeParms =
 
 	if (self.health <= 0)
 	{
+		self.items -= (self.items & (IT_ARMOR1|IT_ARMOR2|IT_ARMOR3));
 		self.health = 100;
 		self.armorvalue = 0;
 		self.armortype = 0;
