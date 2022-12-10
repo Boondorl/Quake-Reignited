@@ -113,7 +113,7 @@ void(float offset) hknight_shot =
 {
 	sound (self, CHAN_WEAPON, "hknight/attack1.wav", 1, ATTN_NORM);
 	
-	local entity missile = FireProjectileAtEnemy(self.origin+self.mins+self.size*0.5, '0 0 0', 400, 6, "progs/k_spike.mdl", FALSE, FALSE);
+	local entity missile = FireProjectileAtEnemy(self.origin+self.mins+self.size*0.5, '0 0 0', 500, 6, "progs/k_spike.mdl", FALSE, FALSE);
 	missile.classname = "knightspike";
 	
 	if (offset)
