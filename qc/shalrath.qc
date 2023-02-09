@@ -143,7 +143,7 @@ void() ShalMissile =
 	self.effects |= EF_MUZZLEFLASH;
 	sound (self, CHAN_WEAPON, "shalrath/attack2.wav", 1, ATTN_NORM);
 	
-	local entity missile = FireProjectileAtEnemy(self.origin+'0 0 10', '0 0 10', 350, 0, "progs/v_spike.mdl", TRUE, FALSE);
+	local entity missile = FireProjectileAtEnemy(self.origin+'0 0 10', '0 0 10', 352, 0, "progs/v_spike.mdl", TRUE, FALSE);
 	missile.avelocity = '300 300 300';
 	missile.nextthink = time + 0.1;
 	missile.think = ShalHome;

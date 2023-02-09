@@ -81,7 +81,7 @@ void()	Dog_JumpTouch =
 		
 	if (other.takedamage)
 	{
-		if (vlen(self.velocity) > 150)
+		if (vlen(self.velocity) >= 144)
 			T_Damage (other, self, self, 20, 50, FALSE);	
 	}
 
@@ -150,7 +150,7 @@ void() dog_leap1	=[	$leap1,		dog_leap2	]
 	
 	if (self.flags & FL_ONGROUND)
 	{
-		self.velocity = '0 0 270';
+		self.velocity = '0 0 272';
 		self.flags -= FL_ONGROUND;
 	}
 };
@@ -158,7 +158,7 @@ void() dog_leap2	=[	$leap2,		dog_leap3	]
 {
 	ai_face();
 
-	LeapAttack(Dog_JumpTouch, 300, 200);
+	LeapAttack(Dog_JumpTouch, 320, 208);
 };
 
 void() dog_leap3	=[	$leap3,		dog_leap4	] {};
@@ -292,7 +292,7 @@ float()	CheckDogJump =
 	if (vlen(self.enemy.origin - self.origin) <= 80)
 		return FALSE;
 
-	return CheckLeap(self.enemy, 200);
+	return CheckLeap(self.enemy, 208);
 };
 
 float()	DogCheckAttack =
@@ -301,7 +301,7 @@ float()	DogCheckAttack =
 		return FALSE;
 	
 	// if close enough for slashing, go for it
-	if (CheckMeleeRange(self.enemy, 100))
+	if (CheckMeleeRange(self.enemy, 96))
 	{
 		self.attack_state = AS_MELEE;
 		return TRUE;

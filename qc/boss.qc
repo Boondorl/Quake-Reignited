@@ -256,7 +256,7 @@ void(vector p) boss_missile =
 	makevectors(self.angles);
 	local vector orig = self.origin + p_x*v_forward + p_y*v_right + p_z*'0 0 1';
 	
-	local entity missile = FireProjectileAtEnemy(orig, '0 0 0', 500, 0, "progs/lavaball.mdl", skill > 1, FALSE);
+	local entity missile = FireProjectileAtEnemy(orig, '0 0 0', 512, 0, "progs/lavaball.mdl", skill > 1, FALSE);
 	missile.classname = "missile";
 	missile.avelocity = '200 100 300';
 	missile.touch = T_MissileTouch;

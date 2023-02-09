@@ -196,7 +196,7 @@ float() fish_checkatk =
 	if (enemy_range > RANGE_MELEE)
 		return FALSE;
 	
-	if (CheckMeleeRange(self.enemy, 100))
+	if (CheckMeleeRange(self.enemy, 96))
 	{
 		self.attack_state = AS_MELEE;
 		return TRUE;

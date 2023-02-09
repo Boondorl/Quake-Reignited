@@ -92,15 +92,15 @@ void()	knight_walk14	=[	$walk14,	knight_walk1	] {ai_walk(3);};
 void()	knight_run1	=[	$runb1,		knight_run2	]
 {
 	IdleSound("knight/idle.wav", 0.2);
-	ai_run(20);
+	ai_run(36);
 };
-void()	knight_run2	=[	$runb2,		knight_run3	] {ai_run(25);};
-void()	knight_run3	=[	$runb3,		knight_run4	] {ai_run(16);};
-void()	knight_run4	=[	$runb4,		knight_run5	] {ai_run(9);};
-void()	knight_run5	=[	$runb5,		knight_run6	] {ai_run(20);};
-void()	knight_run6	=[	$runb6,		knight_run7	] {ai_run(25);};
-void()	knight_run7	=[	$runb7,		knight_run8	] {ai_run(18);};
-void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(8);};
+void()	knight_run2	=[	$runb2,		knight_run3	] {ai_run(45);};
+void()	knight_run3	=[	$runb3,		knight_run4	] {ai_run(29);};
+void()	knight_run4	=[	$runb4,		knight_run5	] {ai_run(16);};
+void()	knight_run5	=[	$runb5,		knight_run6	] {ai_run(36);};
+void()	knight_run6	=[	$runb6,		knight_run7	] {ai_run(45);};
+void()	knight_run7	=[	$runb7,		knight_run8	] {ai_run(29);};
+void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(16);};
 
 
 void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
@@ -233,7 +233,7 @@ void() knight_die =
 
 void() knight_melee =
 {
-	if (CheckChargeAttack(self.enemy, 100, 0))
+	if (CheckChargeAttack(self.enemy, 96, 0))
 		knight_runatk1();
 	else
 		knight_atk1();
@@ -246,7 +246,7 @@ float() knight_checkatk =
 	
 	if (CheckMeleeRange(self.enemy, 160))
 	{
-		if (vlen(self.enemy.origin-self.origin) <= 100)
+		if (vlen(self.enemy.origin-self.origin) <= 96)
 		{
 			self.attack_state = AS_MELEE;
 			return TRUE;

@@ -82,13 +82,20 @@ void()	demon1_walk8	=[	$walk8,		demon1_walk1	] {ai_walk(10);};
 void()	demon1_run1	=[	$run1,		demon1_run2	]
 {
 	IdleSound("demon/idle1.wav", 0.2);
-	ai_run(20);
+	ai_run(15);
+	self.nextthink = time + 0.05;
 };
-void()	demon1_run2	=[	$run2,		demon1_run3	] {ai_run(15);};
-void()	demon1_run3	=[	$run3,		demon1_run4	] {ai_run(36);};
-void()	demon1_run4	=[	$run4,		demon1_run5	] {ai_run(20);};
-void()	demon1_run5	=[	$run5,		demon1_run6	] {ai_run(15);};
-void()	demon1_run6	=[	$run6,		demon1_run1	] {ai_run(36);};
+void()	demon1_run2	=[	$run1,		demon1_run3	] {self.nextthink = time + 0.05;ai_run(15);};
+void()	demon1_run3	=[	$run2,		demon1_run4	] {self.nextthink = time + 0.05;ai_run(11);};
+void()	demon1_run4	=[	$run2,		demon1_run5	] {self.nextthink = time + 0.05;ai_run(11);};
+void()	demon1_run5	=[	$run3,		demon1_run6	] {self.nextthink = time + 0.05;ai_run(27);};
+void()	demon1_run6	=[	$run3,		demon1_run7	] {self.nextthink = time + 0.05;ai_run(27);};
+void()	demon1_run7	=[	$run4,		demon1_run8	] {self.nextthink = time + 0.05;ai_run(15);};
+void()	demon1_run8	=[	$run4,		demon1_run9	] {self.nextthink = time + 0.05;ai_run(15);};
+void()	demon1_run9	=[	$run5,		demon1_run10 ] {self.nextthink = time + 0.05;ai_run(11);};
+void()	demon1_run10 =[	$run5,		demon1_run11 ] {self.nextthink = time + 0.05;ai_run(11);};
+void()	demon1_run11 =[	$run6,		demon1_run12 ] {self.nextthink = time + 0.05;ai_run(27);};
+void()	demon1_run12 =[	$run6,		demon1_run1	] {self.nextthink = time + 0.05;ai_run(27);};
 
 void()	demon1_jump1	=[	$leap1,		demon1_jump2	] {ai_face();};
 void()	demon1_jump2	=[	$leap2,		demon1_jump3	] {ai_face();};
@@ -98,7 +105,7 @@ void()	demon1_jump3	=[	$leap3,		demon1_jump4	]
 	
 	if (self.flags & FL_ONGROUND)
 	{
-		self.velocity = '0 0 270';
+		self.velocity = '0 0 272';
 		self.flags -= FL_ONGROUND;
 	}
 };
@@ -106,7 +113,7 @@ void()	demon1_jump4	=[	$leap4,		demon1_jump5	]
 {
 	ai_face();
 
-	LeapAttack(Demon_JumpTouch, 600, 250);
+	LeapAttack(Demon_JumpTouch, 640, 240);
 };
 void()	demon1_jump5	=[	$leap5,		demon1_jump6	] {};
 void()	demon1_jump6	=[	$leap6,		demon1_jump7	] {};
@@ -140,7 +147,7 @@ void()	demon1_atta9	=[	$attacka9,		demon1_atta10	] {ai_charge(4);};
 void()	demon1_atta10	=[	$attacka10,		demon1_run1		]
 {
 	ai_charge(2);
-	if (CheckMeleeRange(self.enemy, 100))
+	if (CheckMeleeRange(self.enemy, 96))
 		self.think = demon1_atta11;
 };
 void()	demon1_atta11	=[	$attacka11,		demon1_atta12] {ai_charge(2);};
@@ -257,10 +264,10 @@ CheckDemonJump
 */
 float()	CheckDemonJump =
 {
-	if (vlen(self.enemy.origin-self.origin) > 300 && random() < 0.9)
+	if (vlen(self.enemy.origin-self.origin) > 304 && random() < 0.9)
 		return FALSE;
 
-	return CheckLeap(self.enemy, 500);
+	return CheckLeap(self.enemy, 400);
 };
 
 float()	DemonCheckAttack =
@@ -269,7 +276,7 @@ float()	DemonCheckAttack =
 		return FALSE;
 	
 	// if close enough for slashing, go for it
-	if (CheckMeleeRange(self.enemy, 100))
+	if (CheckMeleeRange(self.enemy, 96))
 	{
 		self.attack_state = AS_MELEE;
 		return TRUE;
@@ -317,7 +324,7 @@ void()	Demon_JumpTouch =
 		
 	if (other.takedamage)
 	{
-		if (vlen(self.velocity) > 300)
+		if (vlen(self.velocity) >= 304)
 			T_Damage (other, self, self, 50, 150, FALSE);
 	}
 	

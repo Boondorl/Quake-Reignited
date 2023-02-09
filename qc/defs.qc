@@ -605,6 +605,7 @@ float EPSILON		= 0.01; // don't need ms precision for weapons
 // misc
 //
 .float		cnt; 			// misc flag
+.float		alpha;
 
 //
 // subs

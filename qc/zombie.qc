@@ -192,7 +192,7 @@ void(vector st) ZombieFireGrenade =
 	sound (self, CHAN_WEAPON, "zombie/z_shot1.wav", 1, ATTN_NORM);
 	
 	makevectors(self.angles);
-	local entity missile = FireProjectileAtEnemy(self.origin+st_x*v_forward+st_y*v_right+(st_z-24)*v_up, '0 0 0', 500, 2.5, "progs/zom_gib.mdl", FALSE, TRUE);
+	local entity missile = FireProjectileAtEnemy(self.origin+st_x*v_forward+st_y*v_right+(st_z-24)*v_up, '0 0 0', 512, 2.5, "progs/zom_gib.mdl", FALSE, TRUE);
 	missile.avelocity = '3000 1000 2000';
 	missile.movetype = MOVETYPE_BOUNCE;
 	missile.touch = ZombieGrenadeTouch;

@@ -123,9 +123,9 @@ void() OgreFireGrenade =
 	sound(self, CHAN_WEAPON, "weapons/grenade.wav", 1, ATTN_NORM);
 
 	makevectors(self.angles);
-	local entity missile = FireProjectileAtEnemy(self.origin+v_forward*27-v_right*10+'0 0 16', '0 0 16', 500, 2.5, "progs/grenade.mdl", skill == 3, TRUE);
+	local entity missile = FireProjectileAtEnemy(self.origin+v_forward*27-v_right*10+'0 0 16', '0 0 16', 512, 2.5, "progs/grenade.mdl", skill == 3, TRUE);
 	missile.movetype = MOVETYPE_BOUNCE;
-	missile.avelocity = '300 300 300';
+	missile.avelocity = '304 304 304';
 	missile.touch = OgreGrenadeTouch;
 	missile.think = OgreGrenadeExplode;
 };

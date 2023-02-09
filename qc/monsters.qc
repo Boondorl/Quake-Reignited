@@ -99,7 +99,7 @@ void() walkmonster_start_go =
 
 	self.ideal_yaw = self.angles * '0 1 0';
 	if (!self.yaw_speed)
-		self.yaw_speed = 20;
+		self.yaw_speed = 22.5;
 	self.view_ofs = '0 0 25';
 	self.use = monster_use;
 
@@ -150,7 +150,7 @@ void() flymonster_start_go =
 
 	self.ideal_yaw = self.angles * '0 1 0';
 	if (!self.yaw_speed)
-		self.yaw_speed = 20;
+		self.yaw_speed = 22.5;
 	self.view_ofs = '0 0 25';
 	self.use = monster_use;
 
@@ -208,7 +208,7 @@ void() swimmonster_start_go =
 
 	self.ideal_yaw = self.angles * '0 1 0';
 	if (!self.yaw_speed)
-		self.yaw_speed = 10;
+		self.yaw_speed = 22.5;
 	self.view_ofs = '0 0 10';
 	self.use = monster_use;
 

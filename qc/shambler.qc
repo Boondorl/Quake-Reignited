@@ -117,7 +117,7 @@ void() sham_smash9     =[      $smash9,       sham_smash10   ] {ai_charge(2);};
 void() sham_smash10    =[      $smash10,      sham_smash11   ]
 {
 	ai_face();
-	MeleeAttack(80, 120, 10000); // has a bit more range
+	MeleeAttack(80, 112, 10000); // has a bit more range
 	if (trace_ent.takedamage)
 	{
 		sound (self, CHAN_VOICE, "shambler/smack.wav", 1, ATTN_NORM);
@@ -133,7 +133,7 @@ void(void() next) CheckCombo =
 {
 	if (self.cnt < 2)
 	{
-		if (CheckMeleeRange(self.enemy, 120))
+		if (CheckMeleeRange(self.enemy, 112))
 			self.think = next;
 	}
 };
@@ -141,7 +141,7 @@ void(void() next) CheckCombo =
 void(float side) ShamClaw =
 {
 	ai_charge(10);
-	MeleeAttack(50, 100, 100);
+	MeleeAttack(50, 96, 100);
 	if (trace_ent.takedamage)
 	{
 		sound (self, CHAN_VOICE, "shambler/smack.wav", 1, ATTN_NORM);
@@ -194,7 +194,7 @@ void() sham_melee =
 	if (self.special)
 	{
 		self.special = FALSE;
-		if (CheckChargeAttack(self.enemy, 120, 0)) // clobberin' time
+		if (CheckChargeAttack(self.enemy, 112, 0)) // clobberin' time
 		{
 			self.cnt = 0;
 			self.special_time = time + 2;

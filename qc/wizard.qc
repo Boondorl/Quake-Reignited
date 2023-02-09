@@ -126,7 +126,7 @@ void(float left) WizAttack =
 	
 	makevectors (self.angles);
 	
-	local entity missile = FireProjectileAtEnemy(self.origin+'0 0 30'+v_forward*14+v_right*side, '0 0 0', 750, 6, "progs/w_spike.mdl", skill == 3, FALSE);
+	local entity missile = FireProjectileAtEnemy(self.origin+'0 0 30'+v_forward*14+v_right*side, '0 0 0', 752, 6, "progs/w_spike.mdl", skill == 3, FALSE);
 	missile.classname = "wizspike";
 	missile.touch = wiz_touch;
 }

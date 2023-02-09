@@ -64,6 +64,8 @@ void(entity targ) AddPickedUp =
 		
 		cur.chain = t;
 	}
+	
+	self.alpha = 0.5;
 };
 
 float(entity targ) AlreadyPickedUp = 

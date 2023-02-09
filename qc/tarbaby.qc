@@ -116,7 +116,7 @@ void()	Tar_JumpTouch =
 	
 	if (other.takedamage)
 	{
-		if (vlen(self.velocity) > 300)
+		if (vlen(self.velocity) >= 304)
 		{
 			T_Damage (other, self, self, 15, 50, FALSE);	
 			sound (self, CHAN_WEAPON, "blob/hit1.wav", 1, ATTN_NORM);
@@ -151,7 +151,7 @@ void()	tbaby_jump5		=[	$jump5,	tbaby_jump6		]
 {
 	ai_face();
 	self.movetype = MOVETYPE_BOUNCE;
-	LeapAttack(Tar_JumpTouch, 600, 200);
+	LeapAttack(Tar_JumpTouch, 640, 208);
 };
 void()	tbaby_jump6	=[	$jump6,tbaby_fly1	] {};
 
