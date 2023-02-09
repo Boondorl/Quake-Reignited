@@ -302,8 +302,21 @@ void(float side)	Demon_Melee =
 {
 	ai_face();
 	walkmove(self.ideal_yaw, 12);	// allow a little closing
-	MeleeAttack(20, 80, 75);
-	if (trace_ent.takedamage)
+	//MeleeAttack(20, 80, 75);
+	vector start, end;
+	if (side < 0)
+	{
+		start = '0 -0.0349 0';
+		end = '0 0.1051 0';
+	}
+	else
+	{
+		start = '0 0.0349 0';
+		end = '0 -0.1051 0';
+	}
+	
+	MeleeAttackEx(20, 80, 75, start, end, 0.0524, TRUE, TRUE);
+	if (self.melee_head)
 	{
 		sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
 		makevectors (self.angles);

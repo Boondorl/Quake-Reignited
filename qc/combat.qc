@@ -996,6 +996,137 @@ void(float damage, float dist, float pain) MeleeAttack =
 	T_Damage(trace_ent, self, self, damage, pain, FALSE);
 };
 
+vector(vector start, vector end, float ang) RotateVector =
+{
+	vector tempf = v_forward;
+	vector tempr = v_right;
+	vector tempu = v_up;
+	
+	makevectors('0 1 0' * ang);
+	vector cs = v_forward;
+	
+	v_forward = tempf;
+	v_right = tempr;
+	v_up = tempu;
+	
+	vector cross;
+	cross_x = start_y*end_z - start_z*end_y;
+	cross_y = start_z*end_x - start_x*end_z;
+	cross_z = start_x*end_y - start_y*end_x;
+	cross = normalize(cross);
+	
+	vector r;
+	r_x = cross_y*start_z - cross_z*start_y;
+	r_y = cross_z*start_x - cross_x*start_z;
+	r_z = cross_x*start_y - cross_y*start_x;
+	
+	return normalize(start*cs_x + r*cs_y + cross*(cross*start)*(1-cs_x));
+}
+
+/*
+============
+MeleeAttackEx
+
+Sweep in an area using penetrating traces
+============
+*/
+void(float damage, float dist, float pain, vector startOfs, vector endOfs, float angStep, float includeFirst, float clear) MeleeAttackEx =
+{
+	// Delete the already hit list if requested (usually at the start of a new attack)
+	if (clear)
+	{
+		entity temp = self.melee_head;
+		while (temp)
+		{
+			entity toDelete = temp;
+			temp = toDelete.melee_head;
+			
+			remove(toDelete);
+		}
+		
+		self.melee_head = world;
+	}
+	
+	// Calculate the base direction, clamping at 30 degree angle deviations
+	makevectors(self.angles);
+	vector aimDir = normalize(self.enemy.origin - self.origin);
+	if (aimDir * v_forward < 0.866)
+		aimDir = RotateVector(v_forward, aimDir, 30);
+	
+	vector angs = vectoangles(aimDir);
+	angs_x = -angs_x;
+	makevectors(angs);
+	
+	// Calculate the number of steps to sweep in the area
+	float yawStep = ceil(fabs((endOfs_y - startOfs_y) / angStep));
+	float pitchStep = ceil(fabs((endOfs_x - startOfs_x) / angStep));
+	float steps = yawStep;
+	if (pitchStep > yawStep)
+		steps = pitchStep;
+	
+	// Always do at least one step (aka always hit endOfs)
+	if (!steps)
+		steps = 1;
+	
+	vector sweepStep = (endOfs - startOfs) * (1 / steps);
+	float i = 1;
+	if (includeFirst)
+		i = 0;
+	
+	for (; i <= steps; ++i)
+	{
+		vector dir = normalize(v_forward + v_up*(startOfs_x + sweepStep_x*i) + v_right*(startOfs_y + sweepStep_y*i));
+		vector curPos = self.origin;
+		vector end = self.origin + dir*dist;
+		entity ignore = self;
+		
+		float remaining = dist;
+		while (remaining > 0)
+		{
+			traceline(curPos, end, FALSE, ignore);
+			if (trace_ent)
+			{
+				// Hit something blocking, so stop instantly
+				if (trace_ent.takedamage == DAMAGE_NO)
+					break;
+				
+				// Check if we already hit it
+				entity last = self;
+				entity curMelee = self.melee_head;
+				while (curMelee)
+				{
+					if (curMelee.special_ent == trace_ent)
+						break;
+					
+					last = curMelee;
+					curMelee = curMelee.melee_head;
+				}
+				
+				// Add it to the list and damage it
+				if (!curMelee)
+				{
+					last.melee_head = spawn();
+					last.melee_head.special_ent = trace_ent;
+					
+					T_Damage(trace_ent, self, self, damage, pain, FALSE);
+				}
+			}
+			
+			// TODO: Remove me when done testing
+			entity point = spawn();
+			setmodel(point, "progs/s_bubble.spr");
+			setorigin(point, trace_endpos);
+			point.nextthink = time + 0.2;
+			point.think = SUB_Remove;
+			
+			// Move forward one extra unit to avoid colliding against self if at point blank
+			remaining -= (remaining*trace_fraction + 1);
+			curPos = trace_endpos + dir;
+			ignore = trace_ent;
+		}
+	}
+};
+
 void(entity e, vector org, vector end) SpawnLightning =
 {
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);

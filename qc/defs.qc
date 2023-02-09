@@ -478,6 +478,7 @@ float		CLASSIC_COOP		  = 2;
 
 .entity		last_enemy;
 .entity		queued_enemy;		// this player is trying to piss us off
+.entity		melee_head; // keep track of enemies hit during a melee attack
 
 .float		speed;
 
