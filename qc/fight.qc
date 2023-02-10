@@ -180,7 +180,7 @@ void(float d) ai_charge =
 {
 	ai_face ();
 	// done in C code...
-	walkmove(self.ideal_yaw, d);
+	walkmove(self.angles_y, d);
 };
 
 void() ai_charge_side =
@@ -189,7 +189,7 @@ void() ai_charge_side =
 
 	ai_face();
 
-	walkmove(self.ideal_yaw + 5, 20);
+	walkmove(self.angles_y + 5, 20);
 };
 
 

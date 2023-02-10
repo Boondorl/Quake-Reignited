@@ -414,7 +414,7 @@ stagger back a bit
 */
 void(float dist) ai_painforward =
 {
-	walkmove (self.ideal_yaw, dist);
+	walkmove (self.angles_y, dist);
 };
 
 /*

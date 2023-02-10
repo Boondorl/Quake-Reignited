@@ -293,7 +293,7 @@ float()	DemonCheckAttack =
 void(float side)	Demon_Melee =
 {
 	ai_face();
-	walkmove(self.ideal_yaw, 12);	// allow a little closing
+	walkmove(self.angles_y, 12);	// allow a little closing
 	vector start, end, ofs;
 	if (side < 0)
 	{
