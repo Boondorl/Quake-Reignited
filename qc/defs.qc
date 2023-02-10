@@ -489,6 +489,7 @@ float		CLASSIC_COOP		  = 2;
 .float  sight_finished;
 .float  last_seen_time;
 .float	attack_state;
+.float  turn_multi;
 
 .float  is_boss; // explosive damage reduction
 .float	infight_class; // allow infighting against the same class

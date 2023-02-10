@@ -846,6 +846,15 @@ float(entity targ) CheckFloor =
 	return ground;
 };
 
+void(float spd) Jump =
+{
+	if (self.flags & FL_ONGROUND)
+	{
+		self.flags -= FL_ONGROUND;
+		self.velocity = '0 0 1' * spd;
+	}
+};
+
 /*
 ============
 CheckLeap
@@ -1023,6 +1032,30 @@ vector(vector start, vector end, float ang) RotateVector =
 	return normalize(start*cs_x + r*cs_y + cross*(cross*start)*(1-cs_x));
 }
 
+vector(vector ofs, vector angs, float useZ) GetRelativeOffset =
+{
+	makevectors(angs);
+	
+	vector rotated;
+	if (useZ)
+	{
+		rotated = v_forward*ofs_x + v_right*ofs_y + v_up*ofs_z;
+	}
+	else
+	{
+		v_forward_z = 0;
+		v_forward *= (1 / vlen(v_forward));
+		
+		v_right_x = -v_forward_y;
+		v_right_y = v_forward_x;
+		v_right_z = 0;
+		
+		rotated = v_forward*ofs_x + v_right*ofs_y + '0 0 1'*ofs_z;
+	}
+	
+	return rotated;
+};
+
 /*
 ============
 MeleeAttackEx
@@ -1030,7 +1063,7 @@ MeleeAttackEx
 Sweep in an area using penetrating traces
 ============
 */
-void(float damage, float dist, float pain, vector startOfs, vector endOfs, float angStep, float includeFirst, float clear) MeleeAttackEx =
+void(vector pos, float damage, float dist, float pain, vector startOfs, vector endOfs, float angStep, float includeFirst, float clear) MeleeAttackEx =
 {
 	// Delete the already hit list if requested (usually at the start of a new attack)
 	if (clear)
@@ -1048,13 +1081,26 @@ void(float damage, float dist, float pain, vector startOfs, vector endOfs, float
 	}
 	
 	// Calculate the base direction, clamping at 30 degree angle deviations
-	makevectors(self.angles);
-	vector aimDir = normalize(self.enemy.origin - self.origin);
-	if (aimDir * v_forward < 0.866)
-		aimDir = RotateVector(v_forward, aimDir, 30);
+	float hasSight = !HasInvisible(self.enemy);
+	if (hasSight)
+		hasSight &= visible(self.enemy, FALSE);
 	
-	vector angs = vectoangles(aimDir);
-	angs_x = -angs_x;
+	vector angs;
+	if (!hasSight)
+	{
+		angs = self.angles;
+	}
+	else
+	{
+		makevectors(self.angles);
+		vector aimDir = normalize(self.enemy.origin - self.origin);
+		if (aimDir * v_forward < 0.866)
+			aimDir = RotateVector(v_forward, aimDir, 30);
+		
+		angs = vectoangles(aimDir);
+		angs_x = -angs_x;
+	}
+	
 	makevectors(angs);
 	
 	// Calculate the number of steps to sweep in the area
@@ -1073,12 +1119,26 @@ void(float damage, float dist, float pain, vector startOfs, vector endOfs, float
 	if (includeFirst)
 		i = 0;
 	
+	// TODO: Remove me when done testing
+	entity point = spawn();
+	setmodel(point, "progs/s_bubble.spr");
+	setorigin(point, pos);
+	point.nextthink = time + 0.2;
+	point.think = SUB_Remove;
+	
 	for (; i <= steps; ++i)
 	{
 		vector dir = normalize(v_forward + v_up*(startOfs_x + sweepStep_x*i) + v_right*(startOfs_y + sweepStep_y*i));
-		vector curPos = self.origin;
-		vector end = self.origin + dir*dist;
+		vector curPos = pos;
+		vector end = pos + dir*dist;
 		entity ignore = self;
+		
+		// TODO: Remove me when done testing
+		point = spawn();
+		setmodel(point, "progs/s_bubble.spr");
+		setorigin(point, end);
+		point.nextthink = time + 0.2;
+		point.think = SUB_Remove;
 		
 		float remaining = dist;
 		while (remaining > 0)
@@ -1111,13 +1171,6 @@ void(float damage, float dist, float pain, vector startOfs, vector endOfs, float
 					T_Damage(trace_ent, self, self, damage, pain, FALSE);
 				}
 			}
-			
-			// TODO: Remove me when done testing
-			entity point = spawn();
-			setmodel(point, "progs/s_bubble.spr");
-			setorigin(point, trace_endpos);
-			point.nextthink = time + 0.2;
-			point.think = SUB_Remove;
 			
 			// Move forward one extra unit to avoid colliding against self if at point blank
 			remaining -= (remaining*trace_fraction + 1);

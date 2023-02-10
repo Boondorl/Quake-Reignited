@@ -147,6 +147,10 @@ Stay facing the enemy, but only if we have sight
 */
 void() ai_face =
 {
+	float curSpeed = self.yaw_speed;
+	if (self.turn_multi)
+		self.yaw_speed *= self.turn_multi;
+	
 	if (self.classname != "monster_boss")
 	{
 		if (self.in_attack)
@@ -154,6 +158,7 @@ void() ai_face =
 			if (HasInvisible(self.enemy))
 			{
 				ChangeYaw();
+				self.yaw_speed = curSpeed;
 				return;
 			}
 		}
@@ -161,12 +166,14 @@ void() ai_face =
 		if (!visible(self.enemy, TRUE))
 		{
 			ChangeYaw();
+			self.yaw_speed = curSpeed;
 			return;
 		}
 	}
 	
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 	ChangeYaw();
+	self.yaw_speed = curSpeed;
 };
 
 void(float d) ai_charge =

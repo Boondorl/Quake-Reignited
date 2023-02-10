@@ -81,6 +81,7 @@ void()	demon1_walk8	=[	$walk8,		demon1_walk1	] {ai_walk(10);};
 
 void()	demon1_run1	=[	$run1,		demon1_run2	]
 {
+	self.turn_multi = 0;
 	IdleSound("demon/idle1.wav", 0.2);
 	ai_run(15);
 	self.nextthink = time + 0.05;
@@ -102,12 +103,7 @@ void()	demon1_jump2	=[	$leap2,		demon1_jump3	] {ai_face();};
 void()	demon1_jump3	=[	$leap3,		demon1_jump4	]
 {
 	ai_face();
-	
-	if (self.flags & FL_ONGROUND)
-	{
-		self.velocity = '0 0 272';
-		self.flags -= FL_ONGROUND;
-	}
+	Jump(272);
 };
 void()	demon1_jump4	=[	$leap4,		demon1_jump5	]
 {
@@ -135,7 +131,7 @@ void()	demon1_jump12	=[ 	$leap12,	demon1_run1	] {};
 
 void() demon1_atta11;
 
-void()	demon1_atta1	=[	$attacka1,		demon1_atta2	] {ai_charge(4);};
+void()	demon1_atta1	=[	$attacka1,		demon1_atta2	] {self.turn_multi=0.5;ai_charge(4);};
 void()	demon1_atta2	=[	$attacka2,		demon1_atta3	] {ai_charge(1);};
 void()	demon1_atta3	=[	$attacka3,		demon1_atta4	] {ai_charge(1);};
 void()	demon1_atta4	=[	$attacka4,		demon1_atta5	] {ai_charge(1);};
@@ -147,8 +143,11 @@ void()	demon1_atta9	=[	$attacka9,		demon1_atta10	] {ai_charge(4);};
 void()	demon1_atta10	=[	$attacka10,		demon1_run1		]
 {
 	ai_charge(2);
-	if (CheckMeleeRange(self.enemy, 96))
-		self.think = demon1_atta11;
+	if (InAttackDirection(self.enemy, 60))
+	{
+		if (CheckMeleeRange(self.enemy, 96))
+			self.think = demon1_atta11;
+	}
 };
 void()	demon1_atta11	=[	$attacka11,		demon1_atta12] {ai_charge(2);};
 void()	demon1_atta12	=[	$attacka12,		demon1_atta13] {ai_charge(5);Demon_Melee(-200);};
@@ -228,7 +227,7 @@ void() monster_demon1 =
 
 	setmodel (self, "progs/demon.mdl");
 
-	setsize (self, '-28 -28 -24', '28 28 40');
+	setsize (self, '-20 -20 -24', '20 20 40');
 	self.health = 288;
 	self.gib_health = -72;
 	self.yaw_speed = 30;
@@ -302,20 +301,21 @@ void(float side)	Demon_Melee =
 {
 	ai_face();
 	walkmove(self.ideal_yaw, 12);	// allow a little closing
-	//MeleeAttack(20, 80, 75);
-	vector start, end;
+	vector start, end, ofs;
 	if (side < 0)
 	{
 		start = '0 -0.0349 0';
 		end = '0 0.1051 0';
+		ofs = GetRelativeOffset('12 -12 0', self.angles, FALSE);
 	}
 	else
 	{
 		start = '0 0.0349 0';
 		end = '0 -0.1051 0';
+		ofs = GetRelativeOffset('12 12 0', self.angles, FALSE);
 	}
 	
-	MeleeAttackEx(20, 80, 75, start, end, 0.0524, TRUE, TRUE);
+	MeleeAttackEx(self.origin + ofs, 20, 64, 75, start, end, 0.0524, TRUE, TRUE);
 	if (self.melee_head)
 	{
 		sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
