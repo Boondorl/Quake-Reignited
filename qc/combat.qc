@@ -589,7 +589,7 @@ entity(vector orig, vector ofs, float speed, float lifetime, string model, float
 {
 	local entity missile = spawn();
 	missile.owner = self;
-	missile.movetype = MOVETYPE_FLYMISSILE;
+	missile.movetype = MOVETYPE_FLY;
 	missile.solid = SOLID_BBOX;
 	
 	if (lifetime > 0)
@@ -669,7 +669,7 @@ entity(vector orig, vector dir, float speed, float lifetime, string model) FireP
 {
 	local entity missile = spawn();
 	missile.owner = self;
-	missile.movetype = MOVETYPE_FLYMISSILE;
+	missile.movetype = MOVETYPE_FLY;
 	missile.solid = SOLID_BBOX;
 	
 	if (lifetime > 0)

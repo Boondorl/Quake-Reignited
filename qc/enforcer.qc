@@ -94,7 +94,7 @@ void(vector org, vector vec) LaunchLaser =
 	if (self.classname == "monster_enforcer")
 	{
 		sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
-		missile = FireProjectileAtEnemy(org, '0 0 0', 608, 5, "progs/laser.mdl", skill == 3, FALSE);
+		missile = FireProjectileAtEnemy(org, '0 0 0', 608, 5, "progs/laser.mdl", FALSE, FALSE);
 	}
 	else
 		missile = FireProjectile(org, normalize(vec), 608, 5, "progs/laser.mdl");

@@ -373,7 +373,7 @@ void(vector src, vector dir) PelletAttack =
 {
 	local entity missile = spawn();
 	missile.owner = self;
-	missile.movetype = MOVETYPE_FLYMISSILE;
+	missile.movetype = MOVETYPE_FLY;
 	missile.solid = SOLID_BBOX;
 	missile.classname = "pellet";
 			
@@ -746,7 +746,7 @@ void(vector org, vector dir) launch_spike =
 {
 	newmis = spawn ();
 	newmis.owner = self;
-	newmis.movetype = MOVETYPE_FLYMISSILE;
+	newmis.movetype = MOVETYPE_FLY;
 	newmis.solid = SOLID_BBOX;
 
 	newmis.angles = vectoangles(dir);

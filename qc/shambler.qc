@@ -104,19 +104,19 @@ void() sham_run6       =[      $run6,        sham_run1      ]
 void() sham_smash1     =[      $smash1,       sham_smash2    ]
 {
 	sound (self, CHAN_VOICE, "shambler/melee1.wav", 1, ATTN_NORM);
-	ai_charge(6);
+	ai_charge(4);
 };
-void() sham_smash2     =[      $smash2,       sham_smash3    ] {ai_charge(18);};
-void() sham_smash3     =[      $smash3,       sham_smash4    ] {ai_charge(24);};
-void() sham_smash4     =[      $smash4,       sham_smash5    ] {ai_charge(22);};
-void() sham_smash5     =[      $smash5,       sham_smash6    ] {ai_charge(18);};
-void() sham_smash6     =[      $smash6,       sham_smash7    ] {ai_charge(12);};
-void() sham_smash7     =[      $smash7,       sham_smash8    ] {ai_charge(6);};
+void() sham_smash2     =[      $smash2,       sham_smash3    ] {ai_charge(12);};
+void() sham_smash3     =[      $smash3,       sham_smash4    ] {ai_charge(12);};
+void() sham_smash4     =[      $smash4,       sham_smash5    ] {ai_charge(10);};
+void() sham_smash5     =[      $smash5,       sham_smash6    ] {ai_charge(8);};
+void() sham_smash6     =[      $smash6,       sham_smash7    ] {ai_charge(4);};
+void() sham_smash7     =[      $smash7,       sham_smash8    ] {ai_charge(4);};
 void() sham_smash8     =[      $smash8,       sham_smash9    ] {ai_charge(4);};
-void() sham_smash9     =[      $smash9,       sham_smash10   ] {ai_charge(2);};
+void() sham_smash9     =[      $smash9,       sham_smash10   ] {ai_charge(4);};
 void() sham_smash10    =[      $smash10,      sham_smash11   ]
 {
-	ai_face();
+	ai_charge(4);
 	MeleeAttack(80, 112, 10000); // has a bit more range
 	if (trace_ent.takedamage)
 	{
@@ -126,8 +126,8 @@ void() sham_smash10    =[      $smash10,      sham_smash11   ]
 		SpawnMeatSpray (self.origin + v_forward*16, crandom() * 100 * v_right);
 	}
 };
-void() sham_smash11    =[      $smash11,      sham_smash12   ] {ai_face();};
-void() sham_smash12    =[      $smash12,      sham_run1      ] {ai_face();};
+void() sham_smash11    =[      $smash11,      sham_smash12   ] {ai_charge(10);};
+void() sham_smash12    =[      $smash12,      sham_run1      ] {ai_charge(8);};
 
 void(void() next) CheckCombo =
 {

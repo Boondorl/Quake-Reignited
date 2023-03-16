@@ -235,7 +235,7 @@ void() army_fire =
 	local float inner_spread = spread * 0.5;
 	for (float i = 0; i < 9; ++i)
 	{
-		local entity missile = FireProjectileAtEnemy(org, '0 0 16', 1504, 0, "progs/s_pellet.mdl", skill == 3, FALSE);
+		local entity missile = FireProjectileAtEnemy(org, '0 0 16', 1504, 0, "progs/s_pellet.mdl", FALSE, FALSE);
 		
 		local vector angs = missile.angles;
 		angs_x = -angs_x;
