@@ -336,8 +336,14 @@ void() zombie_paind13	=[	$paind13,	zombie_run1	] {};
 void(float dist) zombie_knockback =
 {
 	self.solid = SOLID_SLIDEBOX;
+	self.maxs_z = 32;
+	setsize(self, self.mins, self.maxs);
+	
 	ai_pain(dist);
+	
 	self.solid = SOLID_TRIGGER;
+	self.maxs_z = 0;
+	setsize(self, self.mins, self.maxs);
 };
 
 void() zombie_trigger =
@@ -458,8 +464,6 @@ void(entity attacker, float take) zombie_pain =
 		self.pain_finished = time + 2;
 		self.solid = SOLID_TRIGGER;
 		self.touch = zombie_trigger;
-		self.maxs_z = 0;
-		setsize(self, self.mins, self.maxs);
 		zombie_paine1();
 		self.special = 0;
 		return;
