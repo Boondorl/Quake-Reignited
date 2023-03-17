@@ -309,9 +309,6 @@ Enhanced pellet functionality
 */
 void() T_PelletTouch =
 {
-	if (other == self.owner)
-		return;		// don't explode on owner
-
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);
@@ -489,10 +486,6 @@ void() BecomeExplosion =
 
 void() T_MissileTouch =
 {
-	if (other == self.owner)
-		// don't explode on owner
-		return;
-
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);
@@ -679,9 +672,6 @@ void() GrenadeExplode =
 
 void() GrenadeTouch =
 {
-	if (other == self.owner)
-		// don't explode on owner
-		return;
 	if (other.takedamage)
 	{
 		T_Damage(other, self, self.owner, 20, 25, FALSE);
@@ -816,13 +806,6 @@ void(float ox) W_FireSpikes =
 
 void() spike_touch =
 {
-	if (other == self.owner)
-		return;
-
-	if (other.solid == SOLID_TRIGGER)
-		// trigger field, do nothing
-		return;
-
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);
@@ -856,13 +839,6 @@ void() spike_touch =
 
 void() superspike_touch =
 {
-	if (other == self.owner)
-		return;
-
-	if (other.solid == SOLID_TRIGGER)
-		// trigger field, do nothing
-		return;
-
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);

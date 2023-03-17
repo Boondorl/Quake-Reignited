@@ -165,9 +165,6 @@ ATTACKS
 
 void() ZombieGrenadeTouch =
 {
-	if (other == self.owner)
-		// don't explode on owner
-		return;
 	if (other.takedamage)
 	{
 		T_Damage (other, self, self.owner, 15, 35, FALSE );
@@ -336,22 +333,41 @@ void() zombie_paind11	=[	$paind11,	zombie_paind12	] {};
 void() zombie_paind12	=[	$paind12,	zombie_paind13	] {};
 void() zombie_paind13	=[	$paind13,	zombie_run1	] {};
 
-void() zombie_paine1	=[	$paine1,	zombie_paine2	]
+void(float dist) zombie_knockback =
 {
-	sound (self, CHAN_VOICE, "zombie/z_pain.wav", 1, ATTN_NORM);
+	self.solid = SOLID_SLIDEBOX;
+	ai_pain(dist);
+	self.solid = SOLID_TRIGGER;
 };
-void() zombie_paine2	=[	$paine2,	zombie_paine3	] {ai_pain(8);setsize (self, '0 0 -24', '0 0 -24');};
-void() zombie_paine3	=[	$paine3,	zombie_paine4	] {ai_pain(5);};
-void() zombie_paine4	=[	$paine4,	zombie_paine5	] {ai_pain(3);};
-void() zombie_paine5	=[	$paine5,	zombie_paine6	] {ai_pain(1);};
-void() zombie_paine6	=[	$paine6,	zombie_paine7	] {ai_pain(2);};
-void() zombie_paine7	=[	$paine7,	zombie_paine8	] {ai_pain(1);};
-void() zombie_paine8	=[	$paine8,	zombie_paine9	] {ai_pain(1);};
-void() zombie_paine9	=[	$paine9,	zombie_paine10	] {ai_pain(2);};
-void() zombie_paine10	=[	$paine10,	zombie_paine11	]
+
+void() zombie_trigger =
 {
-	sound (self, CHAN_BODY, "zombie/z_fall.wav", 1, ATTN_NORM);
-};
+	if (other.owner && (other.owner.flags & (FL_CLIENT|FL_MONSTER)))
+	{
+		if (other.touch)
+		{
+			entity oldSelf = self;
+			self = other;
+			other = oldSelf;
+			
+			self.touch();
+			
+			other = self;
+			self = oldSelf;
+		}
+	}
+}
+
+void() zombie_paine1	=[	$paine1,	zombie_paine2	] {sound(self, CHAN_VOICE, "zombie/z_pain.wav", 1, ATTN_NORM);};
+void() zombie_paine2	=[	$paine2,	zombie_paine3	] {zombie_knockback(8);};
+void() zombie_paine3	=[	$paine3,	zombie_paine4	] {zombie_knockback(5);};
+void() zombie_paine4	=[	$paine4,	zombie_paine5	] {zombie_knockback(3);};
+void() zombie_paine5	=[	$paine5,	zombie_paine6	] {zombie_knockback(1);};
+void() zombie_paine6	=[	$paine6,	zombie_paine7	] {zombie_knockback(2);};
+void() zombie_paine7	=[	$paine7,	zombie_paine8	] {zombie_knockback(1);};
+void() zombie_paine8	=[	$paine8,	zombie_paine9	] {zombie_knockback(1);};
+void() zombie_paine9	=[	$paine9,	zombie_paine10	] {zombie_knockback(2);};
+void() zombie_paine10	=[	$paine10,	zombie_paine11	] {sound(self, CHAN_BODY, "zombie/z_fall.wav", 1, ATTN_NORM);};
 void() zombie_paine11	=[	$paine11,	zombie_paine12	]
 {
 	if (!(self.flags & FL_KNOCKEDDOWN))
@@ -364,22 +380,22 @@ void() zombie_paine11	=[	$paine11,	zombie_paine12	]
 	else
 	{
 		// see if ok to stand up
-		setsize (self, '-16 -16 -24', '16 16 32');
+		self.solid = SOLID_SLIDEBOX;
 		if (!walkmove (0, 0))
 		{
-			setsize (self, '0 0 -24', '0 0 -24');
+			self.solid = SOLID_TRIGGER;
 			self.think = zombie_paine11;
 			self.nextthink = time + 1;
 			self.pain_finished = time + 3;
 		}
 		else
-			self.flags -= FL_KNOCKEDDOWN;
+		{
+			self.flags &= ~FL_KNOCKEDDOWN;
+			self.touch = SUB_Null;
+		}
 	}
 };
-void() zombie_paine12	=[	$paine12,	zombie_paine13	]
-{
-	sound (self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_IDLE);
-};
+void() zombie_paine12	=[	$paine12,	zombie_paine13	] {sound(self, CHAN_VOICE, "zombie/z_idle.wav", 1, ATTN_IDLE);};
 void() zombie_paine13	=[	$paine13,	zombie_paine14	] {};
 void() zombie_paine14	=[	$paine14,	zombie_paine15	] {};
 void() zombie_paine15	=[	$paine15,	zombie_paine16	] {};
@@ -436,6 +452,8 @@ void(entity attacker, float take) zombie_pain =
 	{
 		self.in_pain = TRUE;
 		self.pain_finished = time + 2;
+		self.solid = SOLID_TRIGGER;
+		self.touch = zombie_trigger;
 		zombie_paine1();
 		self.special = 0;
 		return;

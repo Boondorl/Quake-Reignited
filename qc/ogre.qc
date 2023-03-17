@@ -89,10 +89,6 @@ void() OgreGrenadeExplode =
 
 void() OgreGrenadeTouch =
 {
-	if (other == self.owner)
-		// don't explode on owner
-		return;
-		
 	if (other.takedamage)
 	{
 		local float damage = 10;

@@ -194,9 +194,6 @@ void(entity attacker, float damage)	army_pain =
 
 void() T_GruntPelletTouch =
 {
-	if (other == self.owner)
-		return;		// don't explode on owner
-
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);

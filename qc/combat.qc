@@ -130,7 +130,7 @@ void(entity targ, entity attacker) Killed =
 	self.enemy = attacker;
 
 	// bump the monster counter
-	if (self.flags & FL_MONSTER)
+	if (!self.is_zombie && (self.flags & FL_MONSTER))
 	{
 		++killed_monsters;
 		WriteByte (MSG_ALL, SVC_KILLEDMONSTER);

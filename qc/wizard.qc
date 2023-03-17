@@ -84,13 +84,6 @@ void() AttackStrafe =
 
 void() wiz_touch =
 {
-	if (other == self.owner)
-		return;
-
-	if (other.solid == SOLID_TRIGGER)
-		// trigger field, do nothing
-		return;
-
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);

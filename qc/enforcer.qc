@@ -59,10 +59,6 @@ $frame paind17 paind18 paind19
 
 void() Laser_Touch =
 {
-	if (other == self.owner)
-		// don't explode on owner
-		return;
-
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		remove(self);

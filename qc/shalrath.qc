@@ -211,10 +211,6 @@ void() ShalHome =
 
 void() ShalMissileTouch =
 {
-	if (other == self.owner)
-		// don't explode on owner
-		return;
-	
 	self.special = 0;
 
 	local float damage = 10;
