@@ -1085,20 +1085,26 @@ void(vector pos, float damage, float dist, float pain, vector startOfs, vector e
 	if (hasSight)
 		hasSight &= visible(self.enemy, FALSE);
 	
-	vector angs;
-	if (!hasSight)
+	vector angs = self.angles;
+	if (hasSight)
 	{
-		angs = self.angles;
-	}
-	else
-	{
-		makevectors(self.angles);
-		vector aimDir = normalize(self.enemy.origin - self.origin);
-		if (aimDir * v_forward < 0.866)
-			aimDir = RotateVector(v_forward, aimDir, 30);
+		vector aimDir = self.enemy.origin - self.origin;
+		float z = aimDir_z;
 		
-		angs = vectoangles(aimDir);
-		angs_x = -angs_x;
+		aimDir_z = 0;
+		aimDir_x = vlen(aimDir);
+		aimDir_y = z;
+		
+		float pitch = vectoyaw(aimDir);
+		if (pitch > 180)
+			pitch -= 360;
+		
+		if (pitch > 15)
+			pitch = 15;
+		else if (pitch < -15)
+			pitch = -15;
+		
+		angs_x = -pitch;
 	}
 	
 	makevectors(angs);
