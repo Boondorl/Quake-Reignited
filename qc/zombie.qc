@@ -381,9 +381,13 @@ void() zombie_paine11	=[	$paine11,	zombie_paine12	]
 	{
 		// see if ok to stand up
 		self.solid = SOLID_SLIDEBOX;
+		self.maxs_z = 32;
+		setsize(self, self.mins, self.maxs);
 		if (!walkmove (0, 0))
 		{
 			self.solid = SOLID_TRIGGER;
+			self.maxs_z = 0;
+			setsize(self, self.mins, self.maxs);
 			self.think = zombie_paine11;
 			self.nextthink = time + 1;
 			self.pain_finished = time + 3;
@@ -454,6 +458,8 @@ void(entity attacker, float take) zombie_pain =
 		self.pain_finished = time + 2;
 		self.solid = SOLID_TRIGGER;
 		self.touch = zombie_trigger;
+		self.maxs_z = 0;
+		setsize(self, self.mins, self.maxs);
 		zombie_paine1();
 		self.special = 0;
 		return;
