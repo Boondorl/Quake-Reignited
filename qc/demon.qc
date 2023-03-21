@@ -83,13 +83,13 @@ void()	demon1_run1	=[	$run1,		demon1_run2	]
 {
 	self.turn_multi = 0;
 	IdleSound("demon/idle1.wav", 0.2);
-	ai_run(30);
+	ai_run(28);
 };
-void()	demon1_run2	=[	$run2,		demon1_run3	] {ai_run(22);};
-void()	demon1_run3	=[	$run3,		demon1_run4	] {ai_run(54);};
-void()	demon1_run4	=[	$run4,		demon1_run5	] {ai_run(30);};
-void()	demon1_run5	=[	$run5,		demon1_run6	] {ai_run(22);};
-void()	demon1_run6	=[	$run6,		demon1_run1	] {ai_run(54);};
+void()	demon1_run2	=[	$run2,		demon1_run3	] {ai_run(20);};
+void()	demon1_run3	=[	$run3,		demon1_run4	] {ai_run(48);};
+void()	demon1_run4	=[	$run4,		demon1_run5	] {ai_run(28);};
+void()	demon1_run5	=[	$run5,		demon1_run6	] {ai_run(20);};
+void()	demon1_run6	=[	$run6,		demon1_run1	] {ai_run(48);};
 
 void()	demon1_jump1	=[	$leap1,		demon1_jump2	] {ai_face();};
 void()	demon1_jump2	=[	$leap2,		demon1_jump3	] {ai_face();};
@@ -220,7 +220,7 @@ void() monster_demon1 =
 
 	setmodel (self, "progs/demon.mdl");
 
-	setsize (self, '-20 -20 -24', '20 20 40');
+	setsize (self, '-28 -28 -24', '28 28 40');
 	self.health = 288;
 	self.gib_health = -72;
 	self.yaw_speed = 30;

@@ -92,15 +92,15 @@ void()	knight_walk14	=[	$walk14,	knight_walk1	] {ai_walk(3);};
 void()	knight_run1	=[	$runb1,		knight_run2	]
 {
 	IdleSound("knight/idle.wav", 0.2);
-	ai_run(36);
+	ai_run(33);
 };
-void()	knight_run2	=[	$runb2,		knight_run3	] {ai_run(45);};
-void()	knight_run3	=[	$runb3,		knight_run4	] {ai_run(29);};
-void()	knight_run4	=[	$runb4,		knight_run5	] {ai_run(16);};
-void()	knight_run5	=[	$runb5,		knight_run6	] {ai_run(36);};
-void()	knight_run6	=[	$runb6,		knight_run7	] {ai_run(45);};
+void()	knight_run2	=[	$runb2,		knight_run3	] {ai_run(41);};
+void()	knight_run3	=[	$runb3,		knight_run4	] {ai_run(27);};
+void()	knight_run4	=[	$runb4,		knight_run5	] {ai_run(14);};
+void()	knight_run5	=[	$runb5,		knight_run6	] {ai_run(33);};
+void()	knight_run6	=[	$runb6,		knight_run7	] {ai_run(41);};
 void()	knight_run7	=[	$runb7,		knight_run8	] {ai_run(29);};
-void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(16);};
+void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(12);};
 
 
 void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
@@ -114,11 +114,11 @@ void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
 void()	knight_runatk2	=[	$runattack2,	knight_runatk3	] {ai_charge_side();};
 void()	knight_runatk3	=[	$runattack3,	knight_runatk4	] {ai_charge_side();};
 void()	knight_runatk4	=[	$runattack4,	knight_runatk5	] {ai_charge_side();};
-void()	knight_runatk5	=[	$runattack5,	knight_runatk6	] {ai_charge_side();MeleeAttack(5,80,35);};
-void()	knight_runatk6	=[	$runattack6,	knight_runatk7	] {ai_charge_side();MeleeAttack(5,80,35);};
-void()	knight_runatk7	=[	$runattack7,	knight_runatk8	] {ai_charge_side();MeleeAttack(5,80,35);};
-void()	knight_runatk8	=[	$runattack8,	knight_runatk9	] {ai_charge_side();MeleeAttack(5,80,35);};
-void()	knight_runatk9	=[	$runattack9,	knight_runatk10	] {ai_charge_side();MeleeAttack(5,80,35);};
+void()	knight_runatk5	=[	$runattack5,	knight_runatk6	] {ai_charge_side();MeleeAttack(7,80,35);};
+void()	knight_runatk6	=[	$runattack6,	knight_runatk7	] {ai_charge_side();MeleeAttack(7,80,35);};
+void()	knight_runatk7	=[	$runattack7,	knight_runatk8	] {ai_charge_side();MeleeAttack(7,80,35);};
+void()	knight_runatk8	=[	$runattack8,	knight_runatk9	] {ai_charge_side();MeleeAttack(7,80,35);};
+void()	knight_runatk9	=[	$runattack9,	knight_runatk10	] {ai_charge_side();};
 void()	knight_runatk10	=[	$runattack10,	knight_runatk11	] {ai_charge_side();};
 void()	knight_runatk11	=[	$runattack11,	knight_run1	] {ai_charge_side();};
 

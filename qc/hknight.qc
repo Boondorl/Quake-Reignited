@@ -166,15 +166,15 @@ void()	hknight_walk20	=[	$walk20,	hknight_walk1	] {ai_walk(2);};
 void()	hknight_run1	=[	$run1,		hknight_run2	]
 {
 	IdleSound("hknight/idle.wav" , 0.2);
-	ai_run(24);
+	ai_run(23);
 };
-void()	hknight_run2	=[	$run2,		hknight_run3	] {ai_run(30);};
+void()	hknight_run2	=[	$run2,		hknight_run3	] {ai_run(29);};
 void()	hknight_run3	=[	$run3,		hknight_run4	] {ai_run(22);};
 void()	hknight_run4	=[	$run4,		hknight_run5	] {ai_run(20);};
-void()	hknight_run5	=[	$run5,		hknight_run6	] {ai_run(17);};
-void()	hknight_run6	=[	$run6,		hknight_run7	] {ai_run(30);};
-void()	hknight_run7	=[	$run7,		hknight_run8	] {ai_run(26);};
-void()	hknight_run8	=[	$run8,		hknight_run1	] {ai_run(16);};
+void()	hknight_run5	=[	$run5,		hknight_run6	] {ai_run(16);};
+void()	hknight_run6	=[	$run6,		hknight_run7	] {ai_run(29);};
+void()	hknight_run7	=[	$run7,		hknight_run8	] {ai_run(25);};
+void()	hknight_run8	=[	$run8,		hknight_run1	] {ai_run(15);};
 
 //============================================================================
 
