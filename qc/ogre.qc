@@ -388,10 +388,19 @@ void() ogre_die =
 
 void() ogre_melee =
 {
-	if (random() > 0.5)
+	float canSmash = self.special_time <= time;
+	if (canSmash)
+		canSmash &= CheckChargeAttack(self.enemy, 96, 0);
+	
+	if (canSmash)
+	{
+		self.special_time = time + 3;
 		ogre_smash1 ();
+	}
 	else
+	{
 		ogre_swing1 ();
+	}
 };
 
 float() ogre_los =

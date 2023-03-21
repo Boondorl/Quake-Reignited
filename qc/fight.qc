@@ -271,7 +271,7 @@ float() sham_los;
 float(entity e, float melee, float charge) CheckChargeAttack;
 float() ShamCheckAttack =
 {
-	if (vlen(self.enemy.origin-self.origin) > 200)
+	if (vlen(self.enemy.origin-self.origin) > 208)
 		self.cnt = 0;
 	
 	if (enemy_range == RANGE_FAR)
@@ -281,7 +281,7 @@ float() ShamCheckAttack =
 
 	if (self.special_time <= time)
 	{
-		if (CheckChargeAttack(self.enemy, 120, 160))
+		if (CheckChargeAttack(self.enemy, 112, 160))
 		{
 			self.special = TRUE;
 			self.attack_state = AS_MELEE;
@@ -291,7 +291,7 @@ float() ShamCheckAttack =
 	
 	if (self.cnt < 2)
 	{
-		if (CheckMeleeRange(self.enemy, 120))
+		if (CheckMeleeRange(self.enemy, 112))
 		{
 			self.attack_state = AS_MELEE;
 			return TRUE;
@@ -325,10 +325,26 @@ float() OgreCheckAttack =
 	if (enemy_range == RANGE_FAR)
 		return FALSE;
 	
-	if (CheckMeleeRange(self.enemy, 100))
+	if (self.special_time > time)
 	{
-		self.attack_state = AS_MELEE;
-		return TRUE;
+		if (CheckMeleeRange(self.enemy, 96))
+		{
+			self.attack_state = AS_MELEE;
+			return TRUE;
+		}
+	}
+	else if (CheckMeleeRange(self.enemy, 144))
+	{
+		if (vlen(self.enemy.origin-self.origin) <= 96)
+		{
+			self.attack_state = AS_MELEE;
+			return TRUE;
+		}
+		else if (CheckChargeAttack(self.enemy, 0, 0))
+		{
+			self.attack_state = AS_MELEE;
+			return TRUE;
+		}
 	}
 
 	if (self.attack_finished > time)

@@ -294,7 +294,8 @@ void(float side)	Demon_Melee =
 {
 	ai_face();
 	walkmove(self.angles_y, 12);	// allow a little closing
-	vector start, end, ofs;
+	MeleeAttack(20, 80, 75);
+	/*vector start, end, ofs;
 	if (side < 0)
 	{
 		start = '0 -0.0349 0';
@@ -308,8 +309,8 @@ void(float side)	Demon_Melee =
 		ofs = GetRelativeOffset('12 12 0', self.angles, FALSE);
 	}
 	
-	MeleeAttackEx(self.origin + ofs, 20, 64, 75, start, end, 0.0524, TRUE, TRUE);
-	if (self.melee_head)
+	MeleeAttackEx(self.origin + ofs, 20, 64, 75, start, end, 0.0524, TRUE, TRUE);*/
+	if (trace_ent.takedamage)
 	{
 		sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
 		makevectors (self.angles);
