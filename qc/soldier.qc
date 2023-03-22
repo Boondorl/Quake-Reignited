@@ -203,7 +203,7 @@ void() T_GruntPelletTouch =
 	if (other.takedamage)
 	{
 		local float damage = 3;
-		local vector vel = normalize(self.fast_velocity);
+		local vector vel = normalize(self.velocity);
 		SpawnBlood(self.origin - vel*4, vel*40, damage);
 		T_Damage(other, self, self.owner, damage, 5.6, FALSE);
 	}
@@ -254,15 +254,13 @@ void() army_fire =
 		else
 			dir = normalize(v_forward + v_right*spread*x + v_up*spread*y);
 		
-		missile.fast_velocity = dir * vlen(missile.velocity);
-		missile.velocity = dir * 0.01;
-		missile.angles = vectoangles(missile.fast_velocity);
+		missile.velocity = dir * vlen(missile.velocity);
+		missile.angles = vectoangles(missile.velocity);
 		
 		missile.classname = "pellet";
-		missile.nextthink = time + 0.02;
-		missile.think = FastProjectileThink;
+		missile.nextthink = time + 2;
+		missile.think = SUB_Remove;
 		missile.touch = T_GruntPelletTouch;
-		missile.special = time + 2;
 	}
 };
 
