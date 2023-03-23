@@ -88,18 +88,17 @@ void() f_walk18 =[      $swim18, f_walk1 ] {ai_walk(8);};
 
 void() f_run1  =[      $swim1, f_run2 ]
 {
-	if (random() < 0.5)
-		sound (self, CHAN_VOICE, "fish/idle.wav", 1, ATTN_NORM);
-	ai_run(20);
+	IdleSound("fish/idle.wav", 0.5);
+	ai_run(16);
 };
-void() f_run2  =[      $swim3, f_run3 ] {ai_run(20);};
-void() f_run3  =[      $swim5, f_run4 ] {ai_run(20);};
-void() f_run4  =[      $swim7, f_run5 ] {ai_run(20);};
-void() f_run5  =[      $swim9, f_run6 ] {ai_run(20);};
-void() f_run6  =[      $swim11, f_run7 ] {ai_run(20);};
-void() f_run7  =[      $swim13, f_run8 ] {ai_run(20);};
-void() f_run8  =[      $swim15, f_run9 ] {ai_run(20);};
-void() f_run9  =[      $swim17, f_run1 ] {ai_run(20);};
+void() f_run2  =[      $swim3, f_run3 ] {ai_run(16);};
+void() f_run3  =[      $swim5, f_run4 ] {ai_run(16);};
+void() f_run4  =[      $swim7, f_run5 ] {ai_run(16);};
+void() f_run5  =[      $swim9, f_run6 ] {ai_run(16);};
+void() f_run6  =[      $swim11, f_run7 ] {ai_run(16);};
+void() f_run7  =[      $swim13, f_run8 ] {ai_run(16);};
+void() f_run8  =[      $swim15, f_run9 ] {ai_run(16);};
+void() f_run9  =[      $swim17, f_run1 ] {ai_run(16);};
 
 void() fish_melee =
 {
@@ -109,20 +108,39 @@ void() fish_melee =
 
 	ai_charge(10);
 	sound (self, CHAN_VOICE, "fish/bite.wav", 1, ATTN_NORM);
-	MeleeAttack(6, 80, 20);
+	MeleeAttack(7, 64, 20);
 };
+
+void() f_attack6;
+void() f_attack12;
 
 void() f_attack1        =[      $attack1,       f_attack2 ] {ai_charge(10);};
 void() f_attack2        =[      $attack2,       f_attack3 ] {ai_charge(10);};
 void() f_attack3        =[      $attack3,       f_attack4 ] {fish_melee();};
 void() f_attack4        =[      $attack4,       f_attack5 ] {ai_charge(10);};
-void() f_attack5        =[      $attack5,       f_attack6 ] {ai_charge(10);};
+void() f_attack5        =[      $attack5,       f_run1 ]
+{
+	ai_charge(10);
+	if (InAttackDirection(self.enemy, 60))
+	{
+		if (CheckMeleeRange(self.enemy, 80))
+			self.think = f_attack6;
+	}
+};
 void() f_attack6        =[      $attack6,       f_attack7 ] {ai_charge(10);};
 void() f_attack7        =[      $attack7,       f_attack8 ] {ai_charge(10);};
 void() f_attack8        =[      $attack8,       f_attack9 ] {ai_charge(10);};
 void() f_attack9        =[      $attack9,       f_attack10] {fish_melee();};
 void() f_attack10       =[      $attack10,      f_attack11] {ai_charge(10);};
-void() f_attack11       =[      $attack11,      f_attack12] {ai_charge(10);};
+void() f_attack11       =[      $attack11,      f_run1 ]
+{
+	ai_charge(10);
+	if (InAttackDirection(self.enemy, 60))
+	{
+		if (CheckMeleeRange(self.enemy, 80))
+			self.think = f_attack12;
+	}
+};
 void() f_attack12       =[      $attack12,      f_attack13] {ai_charge(10);};
 void() f_attack13       =[      $attack13,      f_attack14] {ai_charge(10);};
 void() f_attack14       =[      $attack14,      f_attack15] {ai_charge(10);};
@@ -196,7 +214,7 @@ float() fish_checkatk =
 	if (enemy_range > RANGE_MELEE)
 		return FALSE;
 	
-	if (CheckMeleeRange(self.enemy, 96))
+	if (CheckMeleeRange(self.enemy, 80))
 	{
 		self.attack_state = AS_MELEE;
 		return TRUE;

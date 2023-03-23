@@ -91,6 +91,7 @@ void()	knight_walk14	=[	$walk14,	knight_walk1	] {ai_walk(3);};
 
 void()	knight_run1	=[	$runb1,		knight_run2	]
 {
+	self.turn_multi = 0;
 	IdleSound("knight/idle.wav", 0.2);
 	ai_run(33);
 };
@@ -105,6 +106,7 @@ void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(12);};
 
 void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
 {
+	self.turn_multi = 0.5;
 	if (random() > 0.5)
 		sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
 	else
@@ -124,6 +126,7 @@ void()	knight_runatk11	=[	$runattack11,	knight_run1	] {ai_charge_side();};
 
 void()	knight_atk1	=[	$attackb1,		knight_atk2	]
 {
+	self.turn_multi = 0.5;
 	sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 	ai_charge(0);
 };

@@ -165,6 +165,7 @@ void()	hknight_walk20	=[	$walk20,	hknight_walk1	] {ai_walk(2);};
 
 void()	hknight_run1	=[	$run1,		hknight_run2	]
 {
+	self.turn_multi = 0;
 	IdleSound("hknight/idle.wav" , 0.2);
 	ai_run(23);
 };
@@ -280,6 +281,7 @@ void()	hknight_magicc11 =[	$magicc11,	hknight_run1] {ai_face();hknight_shot(0.32
 
 void()	hknight_char_b1	=[	$char_b1,	hknight_char_b2	]
 {
+	self.turn_multi = 0.5;
 	ai_charge(27);
 	MeleeAttack(5, 80, 35);
 	if (random() > 0.5)
@@ -298,8 +300,11 @@ void()	hknight_char_b6	=[	$char_b6,	hknight_run1	]
 	--self.cnt;
 	if (self.cnt > 0)
 	{
-		if (CheckChargeAttack(self.enemy, 96, 160))
-			self.think = hknight_char_b1;
+		if (InAttackDirection(self.enemy, 60))
+		{
+			if (CheckChargeAttack(self.enemy, 96, 160))
+				self.think = hknight_char_b1;
+		}
 	}
 };
 
@@ -307,7 +312,7 @@ void()	hknight_char_b6	=[	$char_b6,	hknight_run1	]
 
 void() hknight_char_a9;
 
-void()	hknight_char_a1	=[	$char_a1,	hknight_char_a2	] {ai_charge(22);};
+void()	hknight_char_a1	=[	$char_a1,	hknight_char_a2	] {self.turn_multi = 0.5; ai_charge(22);};
 void()	hknight_char_a2	=[	$char_a2,	hknight_char_a3	] {ai_charge(27);};
 void()	hknight_char_a3	=[	$char_a3,	hknight_char_a4	] {ai_charge(20);};
 void()	hknight_char_a4	=[	$char_a4,	hknight_char_a5	] {ai_charge(17);};
@@ -318,8 +323,11 @@ void()	hknight_char_a8	=[	$char_a8,	hknight_run1	]
 {
 	ai_charge(14);
 	MeleeAttack(5, 80, 35);
-	if (CheckChargeAttack(self.enemy, 0, 160))
-		self.think = hknight_char_a9;
+	if (InAttackDirection(self.enemy, 60))
+	{
+		if (CheckChargeAttack(self.enemy, 0, 160))
+			self.think = hknight_char_a9;
+	}
 };
 void()	hknight_char_a9	=[	$char_a9,	hknight_char_a10	] {ai_charge(22);};
 void()	hknight_char_a10=[	$char_a10,	hknight_char_a11	] {ai_charge(21);};
@@ -330,10 +338,13 @@ void()	hknight_char_a14=[	$char_a14,	hknight_char_a15	] {ai_charge(27); MeleeAtt
 void()	hknight_char_a15=[	$char_a15,	hknight_char_a16	] {ai_charge(23);};
 void()	hknight_char_a16=[	$char_a16,	hknight_run1	]
 {
-	if (CheckChargeAttack(self.enemy, 96, 160))
+	if (InAttackDirection(self.enemy, 60))
 	{
-		self.think = hknight_char_b1;
-		self.cnt = 4;
+		if (CheckChargeAttack(self.enemy, 96, 160))
+		{
+			self.think = hknight_char_b1;
+			self.cnt = 4;
+		}
 	}
 	
 	ai_charge(14);
@@ -341,7 +352,7 @@ void()	hknight_char_a16=[	$char_a16,	hknight_run1	]
 
 //===========================================================================
 
-void()	hknight_slice1	=[	$slice1,	hknight_slice2	] {ai_charge(9);};
+void()	hknight_slice1	=[	$slice1,	hknight_slice2	] {self.turn_multi = 0.5; ai_charge(9);};
 void()	hknight_slice2	=[	$slice2,	hknight_slice3	] {ai_charge(6);};
 void()	hknight_slice3	=[	$slice3,	hknight_slice4	] {ai_charge(13);};
 void()	hknight_slice4	=[	$slice4,	hknight_slice5	] {ai_charge(4);};
@@ -354,7 +365,7 @@ void()	hknight_slice10	=[	$slice10,	hknight_run1	] {ai_charge(3);};
 
 //===========================================================================
 
-void()	hknight_smash1	=[	$smash1,	hknight_smash2	] {ai_charge(1);};
+void()	hknight_smash1	=[	$smash1,	hknight_smash2	] {self.turn_multi = 0.5; ai_charge(1);};
 void()	hknight_smash2	=[	$smash2,	hknight_smash3	] {ai_charge(13);};
 void()	hknight_smash3	=[	$smash3,	hknight_smash4	] {ai_charge(9);};
 void()	hknight_smash4	=[	$smash4,	hknight_smash5	] {ai_charge(11);};
@@ -370,7 +381,7 @@ void()	hknight_smash11	=[	$smash11,	hknight_run1	] {ai_charge(1);};
 
 void() hknight_watk13;
 
-void()	hknight_watk1	=[	$w_attack1,	hknight_watk2	] {ai_charge(2);};
+void()	hknight_watk1	=[	$w_attack1,	hknight_watk2	] {self.turn_multi = 0.5; ai_charge(2);};
 void()	hknight_watk2	=[	$w_attack2,	hknight_watk3	] {ai_charge(1);};
 void()	hknight_watk3	=[	$w_attack3,	hknight_watk4	] {ai_charge(1);};
 void()	hknight_watk4	=[	$w_attack4,	hknight_watk5	] {ai_charge(1);};
@@ -385,8 +396,11 @@ void()	hknight_watk12	=[	$w_attack12,	hknight_run1	]
 {
 	ai_charge(2);
 	MeleeAttack(5, 80, 35);
-	if (CheckMeleeRange(self.enemy, 96))
-		self.think = hknight_watk13;
+	if (InAttackDirection(self.enemy, 60))
+	{
+		if (CheckMeleeRange(self.enemy, 96))
+			self.think = hknight_watk13;
+	}
 };
 void()	hknight_watk13	=[	$w_attack13,	hknight_watk14	] {ai_charge(1);};
 void()	hknight_watk14	=[	$w_attack14,	hknight_watk15	] {ai_charge(1);};

@@ -193,6 +193,7 @@ void() ogre_walk16	=[	$walk16,	ogre_walk1	] {ai_walk(4);};
 
 void() ogre_run1	=[	$run1,		ogre_run2	]
 {
+	self.turn_multi = 0;
 	IdleSound("ogre/ogidle2.wav", 0.2);
 	ai_run(9);
 };
@@ -206,6 +207,7 @@ void() ogre_run8	=[	$run8,		ogre_run1	] {ai_run(24);};
 
 void() ogre_swing1	=[	$swing1,		ogre_swing2	]
 {
+	self.turn_multi = 0.5;
 	sound (self, CHAN_WEAPON, "ogre/ogsawatk.wav", 1, ATTN_NORM);
 	ai_charge(11);
 };
@@ -225,6 +227,7 @@ void() ogre_swing14	=[	$swing14,		ogre_run1	] {ai_charge(9);};
 
 void() ogre_smash1	=[	$smash1,		ogre_smash2	]
 {
+	self.turn_multi = 0.5;
 	sound (self, CHAN_WEAPON, "ogre/ogsawatk.wav", 1, ATTN_NORM);
 	ai_charge(6);
 };
