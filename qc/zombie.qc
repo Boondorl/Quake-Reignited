@@ -333,19 +333,6 @@ void() zombie_paind11	=[	$paind11,	zombie_paind12	] {};
 void() zombie_paind12	=[	$paind12,	zombie_paind13	] {};
 void() zombie_paind13	=[	$paind13,	zombie_run1	] {};
 
-void(float dist) zombie_knockback =
-{
-	self.solid = SOLID_SLIDEBOX;
-	self.maxs_z = 32;
-	setsize(self, self.mins, self.maxs);
-	
-	ai_pain(dist);
-	
-	self.solid = SOLID_TRIGGER;
-	self.maxs_z = 0;
-	setsize(self, self.mins, self.maxs);
-};
-
 void() zombie_trigger =
 {
 	if (other.owner && (other.owner.flags & (FL_CLIENT|FL_MONSTER)))
@@ -363,6 +350,21 @@ void() zombie_trigger =
 		}
 	}
 }
+
+void(float dist) zombie_knockback =
+{
+	self.touch = SUB_Null;
+	self.solid = SOLID_SLIDEBOX;
+	self.maxs_z = 32;
+	setsize(self, self.mins, self.maxs);
+	
+	ai_pain(dist);
+	
+	self.touch = zombie_trigger;
+	self.solid = SOLID_TRIGGER;
+	self.maxs_z = 0;
+	setsize(self, self.mins, self.maxs);
+};
 
 void() zombie_paine1	=[	$paine1,	zombie_paine2	] {sound(self, CHAN_VOICE, "zombie/z_pain.wav", 1, ATTN_NORM);};
 void() zombie_paine2	=[	$paine2,	zombie_paine3	] {zombie_knockback(8);};
@@ -386,11 +388,13 @@ void() zombie_paine11	=[	$paine11,	zombie_paine12	]
 	else
 	{
 		// see if ok to stand up
+		self.touch = SUB_Null;
 		self.solid = SOLID_SLIDEBOX;
 		self.maxs_z = 32;
 		setsize(self, self.mins, self.maxs);
 		if (!walkmove (0, 0))
 		{
+			self.touch = zombie_trigger;
 			self.solid = SOLID_TRIGGER;
 			self.maxs_z = 0;
 			setsize(self, self.mins, self.maxs);
@@ -401,7 +405,6 @@ void() zombie_paine11	=[	$paine11,	zombie_paine12	]
 		else
 		{
 			self.flags &= ~FL_KNOCKEDDOWN;
-			self.touch = SUB_Null;
 		}
 	}
 };
@@ -462,8 +465,6 @@ void(entity attacker, float take) zombie_pain =
 	{
 		self.in_pain = TRUE;
 		self.pain_finished = time + 2;
-		self.solid = SOLID_TRIGGER;
-		self.touch = zombie_trigger;
 		zombie_paine1();
 		self.special = 0;
 		return;
