@@ -76,38 +76,18 @@ W_FireAxe
 */
 void() W_FireAxe =
 {
-	makevectors (self.v_angle);
-	
 	local vector source = self.origin + self.view_ofs;
-	traceline (source, source + v_forward*64, FALSE, self);
-	if (trace_fraction == 1)
+	float hit = MeleeSweep(source, 54, 64, 75, '0 -0.1763 0', '0 0.1763 0', 0.0524, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
+	if (hit == SWEEP_HIT_NONE)
 		return;
+	
+	if (hit & SWEEP_HIT_MAP)
+		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
 	
 	if (self.invisible_finished > time)
 		self.show_hostile = time + 0.1;
 	else
 		self.show_hostile = time + 1;
-
-	local vector org = trace_endpos - v_forward*4;
-	if (trace_ent.takedamage)
-	{
-		trace_ent.axhitme = 1;
-		SpawnBlood (org, '0 0 0', 20);
-		local float damage = 54;
-		if (trace_ent.is_zombie)
-			damage *= 0.5;
-		
-		T_Damage (trace_ent, self, self, damage, 75, FALSE);
-	}
-	else
-	{	// hit wall
-		sound (self, CHAN_WEAPON, "player/axhit2.wav", 1, ATTN_NORM);
-		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
-		WriteCoord (MSG_BROADCAST, org_x);
-		WriteCoord (MSG_BROADCAST, org_y);
-		WriteCoord (MSG_BROADCAST, org_z);
-	}
 };
 
 

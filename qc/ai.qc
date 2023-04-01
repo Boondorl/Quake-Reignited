@@ -703,7 +703,7 @@ void(float dist) ai_run =
 	self.show_hostile = time + 1;
 
 	// check knowledge of enemy
-	enemy_vis = visible(self.enemy, FALSE);
+	enemy_vis = visible(self.enemy, self.waterlevel > 0 && self.enemy.waterlevel > 0);
 	if (enemy_vis || self.in_attack)
 		self.last_seen_time = time + 3;
 

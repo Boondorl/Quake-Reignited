@@ -118,7 +118,24 @@ void(entity targ, entity attacker) Killed =
 		self.health = -99;
 		
 	if (self.block_ent)
+	{
 		remove(self.block_ent);
+		self.block_ent = world;
+	}
+	
+	if (self.melee_head)
+	{
+		entity temp = self.melee_head;
+		while (temp)
+		{
+			entity toDelete = temp;
+			temp = toDelete.melee_head;
+			
+			remove(toDelete);
+		}
+		
+		self.melee_head = world;
+	}
 
 	if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
 	{	// doors, triggers, etc
@@ -981,7 +998,9 @@ void(float damage, float dist, float pain) MeleeAttack =
 	}
 	
 	if (hassight)
+	{
 		dir = normalize(self.enemy.origin - self.origin);
+	}
 	else
 	{
 		makevectors(self.angles);
@@ -998,7 +1017,9 @@ void(float damage, float dist, float pain) MeleeAttack =
 			dir = normalize(dir);
 		}
 		else
+		{
 			dir = v_forward;
+		}
 	}
 	
 	traceline(self.origin, self.origin + dir*dist, FALSE, self);
@@ -1063,10 +1084,20 @@ MeleeAttackEx
 Sweep in an area using penetrating traces
 ============
 */
-void(vector pos, float damage, float dist, float pain, vector startOfs, vector endOfs, float angStep, float includeFirst, float clear) MeleeAttackEx =
+void(vector org, vector vel, float damage) SpawnBlood;
+
+float SWEEP_HIT_NONE = 0;
+float SWEEP_HIT_MAP = 1;
+float SWEEP_HIT_ENT = 1<<1;
+
+float SWEEP_INCLUDE_FIRST = 1;
+float SWEEP_CLEAR = 1<<1;
+float SWEEP_STOP_AT_HIT = 1<<2;
+float SWEEP_NO_PARTICLES = 1<<3;
+float(vector pos, float damage, float dist, float pain, vector startOfs, vector endOfs, float angStep, float mFlags) MeleeSweep =
 {
 	// Delete the already hit list if requested (usually at the start of a new attack)
-	if (clear)
+	if (mFlags & SWEEP_CLEAR)
 	{
 		entity temp = self.melee_head;
 		while (temp)
@@ -1080,31 +1111,39 @@ void(vector pos, float damage, float dist, float pain, vector startOfs, vector e
 		self.melee_head = world;
 	}
 	
-	// Calculate the base direction, clamping at 30 degree angle deviations
-	float hasSight = !HasInvisible(self.enemy);
-	if (hasSight)
-		hasSight &= visible(self.enemy, FALSE);
-	
-	vector angs = self.angles;
-	if (hasSight)
+	vector angs;
+	if (self.flags & FL_CLIENT)
 	{
-		vector aimDir = self.enemy.origin - self.origin;
-		float z = aimDir_z;
+		angs = self.v_angle;
+	}
+	else
+	{
+		// Calculate the base direction, clamping at 30 degree pitch deviations
+		float hasSight = !HasInvisible(self.enemy);
+		if (hasSight)
+			hasSight &= visible(self.enemy, FALSE);
 		
-		aimDir_z = 0;
-		aimDir_x = vlen(aimDir);
-		aimDir_y = z;
-		
-		float pitch = vectoyaw(aimDir);
-		if (pitch > 180)
-			pitch -= 360;
-		
-		if (pitch > 15)
-			pitch = 15;
-		else if (pitch < -15)
-			pitch = -15;
-		
-		angs_x = -pitch;
+		angs = self.angles;
+		if (hasSight)
+		{
+			vector aimDir = self.enemy.origin - self.origin;
+			float z = aimDir_z;
+			
+			aimDir_z = 0;
+			aimDir_x = vlen(aimDir);
+			aimDir_y = z;
+			
+			float pitch = vectoyaw(aimDir);
+			if (pitch > 180)
+				pitch -= 360;
+			
+			if (pitch > 15)
+				pitch = 15;
+			else if (pitch < -15)
+				pitch = -15;
+			
+			angs_x = -pitch;
+		}
 	}
 	
 	makevectors(angs);
@@ -1112,18 +1151,14 @@ void(vector pos, float damage, float dist, float pain, vector startOfs, vector e
 	// Calculate the number of steps to sweep in the area
 	float yawStep = ceil(fabs((endOfs_y - startOfs_y) / angStep));
 	float pitchStep = ceil(fabs((endOfs_x - startOfs_x) / angStep));
-	float steps = yawStep;
-	if (pitchStep > yawStep)
-		steps = pitchStep;
+	float steps = pitchStep > yawStep ? pitchStep : yawStep;
 	
 	// Always do at least one step (aka always hit endOfs)
 	if (!steps)
 		steps = 1;
 	
 	vector sweepStep = (endOfs - startOfs) * (1 / steps);
-	float i = 1;
-	if (includeFirst)
-		i = 0;
+	float i = (mFlags & SWEEP_INCLUDE_FIRST) ? 0 : 1;
 	
 	// TODO: Remove me when done testing
 	entity point = spawn();
@@ -1132,6 +1167,8 @@ void(vector pos, float damage, float dist, float pain, vector startOfs, vector e
 	point.nextthink = time + 0.2;
 	point.think = SUB_Remove;
 	
+	float hit = SWEEP_HIT_NONE;
+	float halfDmg = damage * 0.5;
 	for (; i <= steps; ++i)
 	{
 		vector dir = normalize(v_forward + v_up*(startOfs_x + sweepStep_x*i) + v_right*(startOfs_y + sweepStep_y*i));
@@ -1139,22 +1176,33 @@ void(vector pos, float damage, float dist, float pain, vector startOfs, vector e
 		vector end = pos + dir*dist;
 		entity ignore = self;
 		
-		// TODO: Remove me when done testing
-		point = spawn();
-		setmodel(point, "progs/s_bubble.spr");
-		setorigin(point, end);
-		point.nextthink = time + 0.2;
-		point.think = SUB_Remove;
-		
 		float remaining = dist;
 		while (remaining > 0)
 		{
 			traceline(curPos, end, FALSE, ignore);
-			if (trace_ent)
+			vector dest = trace_endpos - dir*4;
+			if (!trace_ent) // Didn't hit anything meaningful, so stop instantly
 			{
-				// Hit something blocking, so stop instantly
-				if (trace_ent.takedamage == DAMAGE_NO)
-					break;
+				if (trace_fraction < 1)
+				{
+					hit |= SWEEP_HIT_MAP;
+					if (!(mFlags & SWEEP_NO_PARTICLES))
+					{
+						WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
+						WriteByte(MSG_BROADCAST, TE_GUNSHOT);
+						WriteCoord(MSG_BROADCAST, dest_x);
+						WriteCoord(MSG_BROADCAST, dest_y);
+						WriteCoord(MSG_BROADCAST, dest_z);
+					}
+				}
+				
+				break;
+			}
+			
+			float wasBSP = trace_ent.solid == SOLID_BSP;
+			if (trace_ent.takedamage)
+			{
+				hit = SWEEP_HIT_ENT;
 				
 				// Check if we already hit it
 				entity last = self;
@@ -1173,17 +1221,49 @@ void(vector pos, float damage, float dist, float pain, vector startOfs, vector e
 				{
 					last.melee_head = spawn();
 					last.melee_head.special_ent = trace_ent;
+					trace_ent.axhitme = TRUE;
 					
-					T_Damage(trace_ent, self, self, damage, pain, FALSE);
+					float d = ((self.flags & FL_CLIENT) && trace_ent.is_zombie) ? halfDmg : damage;
+					T_Damage(trace_ent, self, self, d, pain, FALSE);
+					if (!(mFlags & SWEEP_NO_PARTICLES))
+						SpawnBlood(dest, '0 0 0', d);
+					
+					if (mFlags & SWEEP_STOP_AT_HIT)
+						break;
 				}
 			}
+			else
+			{
+				hit |= SWEEP_HIT_MAP;
+				if (!(mFlags & SWEEP_NO_PARTICLES))
+				{
+					WriteByte(MSG_BROADCAST, SVC_TEMPENTITY);
+					WriteByte(MSG_BROADCAST, TE_GUNSHOT);
+					WriteCoord(MSG_BROADCAST, dest_x);
+					WriteCoord(MSG_BROADCAST, dest_y);
+					WriteCoord(MSG_BROADCAST, dest_z);
+				}
+			}
+			
+			// BSPs also always stop the attack
+			if (wasBSP)
+				break;
 			
 			// Move forward one extra unit to avoid colliding against self if at point blank
 			remaining -= (remaining*trace_fraction + 1);
 			curPos = trace_endpos + dir;
 			ignore = trace_ent;
 		}
+		
+		// TODO: Remove me when done testing
+		point = spawn();
+		setmodel(point, "progs/s_bubble.spr");
+		setorigin(point, trace_endpos);
+		point.nextthink = time + 0.2;
+		point.think = SUB_Remove;
 	}
+	
+	return hit;
 };
 
 void(entity e, vector org, vector end) SpawnLightning =
