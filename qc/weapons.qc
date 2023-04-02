@@ -995,19 +995,19 @@ void() W_Attack =
 			player_axec1 ();
 		else
 			player_axed1 ();
-		self.attack_finished = time + FRAME*37;
+		self.attack_finished = time + FRAME*43;
 	}
 	else if (self.weapon == IT_SHOTGUN)
 	{
 		player_shot1 ();
 		W_FireShotgun ();
-		self.attack_finished = time + FRAME*37;
+		self.attack_finished = time + FRAME*43;
 	}
 	else if (self.weapon == IT_SUPER_SHOTGUN)
 	{
 		player_shot1 ();
 		W_FireSuperShotgun ();
-		self.attack_finished = time + FRAME*50;
+		self.attack_finished = time + FRAME*57;
 	}
 	else if (self.weapon == IT_NAILGUN)
 	{
@@ -1024,13 +1024,13 @@ void() W_Attack =
 	{
 		player_rocket1();
 		W_FireGrenade();
-		self.attack_finished = time + FRAME*42;
+		self.attack_finished = time + FRAME*48;
 	}
 	else if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
 		player_rocket1();
 		W_FireRocket();
-		self.attack_finished = time + FRAME*57;
+		self.attack_finished = time + FRAME*65;
 	}
 	else if (self.weapon == IT_LIGHTNING)
 	{

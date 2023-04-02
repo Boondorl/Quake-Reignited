@@ -203,7 +203,7 @@ void() player_nail1   =[$nailatt1, player_nail2  ]
 		else if (weap == IT_SUPER_NAILGUN)
 		{
 			if (am)
-				self.attack_finished = time + (FRAME*12 - floor(self.special/FRAME));
+				self.attack_finished = time + (0.2 - self.special);
 			else
 				self.attack_finished = time;
 			
@@ -248,7 +248,7 @@ void() player_nail2   =[$nailatt2, player_nail1  ]
 		else if (weap == IT_SUPER_NAILGUN)
 		{
 			if (am)
-				self.attack_finished = time + (FRAME*12 - floor(self.special/FRAME));
+				self.attack_finished = time + (0.2 - self.special);
 			else
 				self.attack_finished = time;
 			
