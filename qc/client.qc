@@ -815,12 +815,20 @@ void() PlayerJump =
 
 	if (self.waterlevel >= 2)
 	{
-		if (self.watertype == CONTENT_WATER)
-			self.velocity_z = 150;
-		else if (self.watertype == CONTENT_SLIME)
-			self.velocity_z = 120;
-		else
-			self.velocity_z = 75;
+		// [Nash] make surfacing speed match forwardmove
+		if (self.waterlevel < 3)
+		{
+			if (self.watertype == CONTENT_WATER)
+				self.velocity_z = 150;
+			else if (self.watertype == CONTENT_SLIME)
+				self.velocity_z = 120;
+			else
+				self.velocity_z = 75;
+		}
+		else if (self.waterlevel == 3)
+		{
+			self.velocity_z = 216.5;
+		}
 
 		// play swimming sound
 		if (self.swim_flag < time)
