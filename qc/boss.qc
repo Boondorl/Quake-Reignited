@@ -322,6 +322,9 @@ void() monster_boss =
 
 	total_monsters = total_monsters + 1;
 
+	// [Nash] give Chthon the monster flag, so that it may print player obituaries in client.qc
+	self.flags |= FL_MONSTER;
+
 	self.use = boss_awake;
 };
 
