@@ -637,8 +637,6 @@ entity(vector orig, vector ofs, float speed, float lifetime, string model, float
 		}
 		
 		missile.velocity = normalize(end - orig) * speed;
-		if (grav)
-			missile.velocity_z = CalculateProjectileZ(orig, end, missile.velocity);
 	}
 	else
 	{
@@ -661,14 +659,26 @@ entity(vector orig, vector ofs, float speed, float lifetime, string model, float
 			dir = normalize(dir);
 		}
 		else
+		{
 			dir = v_forward;
+		}
 		
 		missile.velocity = dir * speed;
-		if (grav)
-			missile.velocity_z += 300;
 	}
 	
 	missile.angles = vectoangles(missile.velocity);
+	
+	if (grav)
+	{
+		makevectors(missile.angles);
+		
+		float p = missile.angles.x;
+		if (p > 90)
+			p -= 360;
+		
+		missile.velocity = normalize(missile.velocity/speed + v_up*0.3639*(1 - fabs(p)/90)) * speed;
+		missile.angles = vectoangles(missile.velocity);
+	}
 	
 	setmodel(missile, model);
 	setsize(missile, VEC_ORIGIN, VEC_ORIGIN);
