@@ -429,7 +429,7 @@ void() W_FireSuperShotgun =
 	else
 	{
 		self.ammo_shells -= 2;
-		FirePellets(18, 10, GetAimDirection(self.origin+'0 0 15', 2048), '0.1122 0.1122 0');
+		FirePellets(18, 10, GetAimDirection(self.origin+'0 0 15', 2048), '0.1122 0.0839 0');
 		self.punchangle_x = -4;
 	}
 	
@@ -500,7 +500,7 @@ void() W_FireRocket =
 
 	self.punchangle_x = -2;
 
-	local entity missile = FireProjectile(self.origin, GetAimDirection(self.origin, 1024), 1248, 3.5, "progs/missile.mdl");
+	local entity missile = FireProjectile(self.origin, GetAimDirection(self.origin, 1024), 1440, 3.5, "progs/missile.mdl");
 	missile.classname = "missile";
 	missile.touch = T_MissileTouch;
 };
@@ -678,7 +678,7 @@ void() W_FireGrenade =
 	makevectors (self.v_angle);
 	
 	// 640 is used to keep a similar velocity to vanilla now that it rotates the tragectory
-	local entity missile = FireProjectile(self.origin, GetAimDirection(self.origin, 1024), 640, 2.5, "progs/grenade.mdl");
+	local entity missile = FireProjectile(self.origin, GetAimDirection(self.origin, 1024), 704, 2.5, "progs/grenade.mdl");
 	missile.classname = "grenade";
 	missile.movetype = MOVETYPE_BOUNCE;
 	missile.think = GrenadeExplode;
@@ -690,7 +690,7 @@ void() W_FireGrenade =
 		p -= 360;
 	
 	local float spd = vlen(missile.velocity);
-	missile.velocity = normalize(missile.velocity/spd + v_up*0.364*(1 - fabs(p)/90)) * spd;
+	missile.velocity = normalize(missile.velocity/spd + v_up*0.3152*(1 - fabs(p)/90)) * spd;
 	missile.angles = vectoangles(missile.velocity);
 	
 	self.punchangle_x = -2;
@@ -742,14 +742,14 @@ void(float o) W_FireSuperSpikes =
 	
 	--self.ammo_nails;
 	local vector orig = self.origin + '0 0 15';
-	local entity missile = FireProjectile(orig+dir*o, GetAimDirection(orig, 1024), 1008, 6, "progs/s_spike.mdl");
+	local entity missile = FireProjectile(orig+dir*o, GetAimDirection(orig, 1024), 1120, 6, "progs/s_spike.mdl");
 	missile.classname = "spike";
 	missile.touch = spike_touch;
 	
 	if (self.ammo_nails > 0)
 	{
 		--self.ammo_nails;
-		missile = FireProjectile(orig-dir*o, GetAimDirection(orig, 1024), 1008, 6, "progs/s_spike.mdl");
+		missile = FireProjectile(orig-dir*o, GetAimDirection(orig, 1024), 1120, 6, "progs/s_spike.mdl");
 		missile.classname = "spike";
 		missile.touch = spike_touch;
 	}
@@ -773,7 +773,7 @@ void(float ox) W_FireSpikes =
 		ox *= -1;
 	
 	local vector orig = self.origin + '0 0 15';
-	local entity missile = FireProjectile(orig+v_right*ox, GetAimDirection(orig, 1024), 1248, 6, "progs/spike.mdl");
+	local entity missile = FireProjectile(orig+v_right*ox, GetAimDirection(orig, 1024), 1440, 6, "progs/spike.mdl");
 	missile.classname = "spike";
 	missile.touch = spike_touch;
 
@@ -1007,7 +1007,7 @@ void() W_Attack =
 	{
 		player_shot1 ();
 		W_FireSuperShotgun ();
-		self.attack_finished = time + FRAME*57;
+		self.attack_finished = time + FRAME*65;
 	}
 	else if (self.weapon == IT_NAILGUN)
 	{
@@ -1024,13 +1024,13 @@ void() W_Attack =
 	{
 		player_rocket1();
 		W_FireGrenade();
-		self.attack_finished = time + FRAME*48;
+		self.attack_finished = time + FRAME*50;
 	}
 	else if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
 		player_rocket1();
 		W_FireRocket();
-		self.attack_finished = time + FRAME*65;
+		self.attack_finished = time + FRAME*72;
 	}
 	else if (self.weapon == IT_LIGHTNING)
 	{

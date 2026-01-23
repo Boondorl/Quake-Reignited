@@ -567,7 +567,7 @@ float HEAVY_ARMOR_TYPE = 0.75;
 
 float MAX_HEALTH	= 200;
 float DAMAGE_AMP	= 3;
-float FRAME			= 1/72; // for better timings
+float FRAME			= 1.0/72.0; // for better timings
 float EPSILON		= 0.012; // don't need ms precision for weapons
 
 //
