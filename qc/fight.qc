@@ -39,7 +39,6 @@ void() sham_swingr1;
 void() sham_swingl1;
 
 float()	DemonCheckAttack;
-void(float side)	Demon_Melee;
 float(entity targ, float range) CheckMeleeRange;
 
 void(vector dest) ChooseTurn;

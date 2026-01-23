@@ -129,8 +129,8 @@ void()	demon1_atta2	=[	$attacka2,		demon1_atta3	] {ai_charge(1);};
 void()	demon1_atta3	=[	$attacka3,		demon1_atta4	] {ai_charge(1);};
 void()	demon1_atta4	=[	$attacka4,		demon1_atta5	] {ai_charge(1);};
 void()	demon1_atta5	=[	$attacka5,		demon1_atta6	] {ai_charge(2);};
-void()	demon1_atta6	=[	$attacka6,		demon1_atta7	] {ai_charge(1);Demon_Melee(200);};
-void()	demon1_atta7	=[	$attacka7,		demon1_atta8	] {ai_charge(6);};
+void()	demon1_atta6	=[	$attacka6,		demon1_atta7	] {ai_charge(1);};
+void()	demon1_atta7	=[	$attacka7,		demon1_atta8	] {ai_charge(6);Demon_Melee(200, '0 -0.1763 0', '0 0 0');};
 void()	demon1_atta8	=[	$attacka8,		demon1_atta9	] {ai_charge(8);};
 void()	demon1_atta9	=[	$attacka9,		demon1_atta10	] {ai_charge(4);};
 void()	demon1_atta10	=[	$attacka10,		demon1_run1		]
@@ -143,8 +143,8 @@ void()	demon1_atta10	=[	$attacka10,		demon1_run1		]
 	}
 };
 void()	demon1_atta11	=[	$attacka11,		demon1_atta12] {ai_charge(2);};
-void()	demon1_atta12	=[	$attacka12,		demon1_atta13] {ai_charge(5);Demon_Melee(-200);};
-void()	demon1_atta13	=[	$attacka13,		demon1_atta14] {ai_charge(8);};
+void()	demon1_atta12	=[	$attacka12,		demon1_atta13] {ai_charge(5);};
+void()	demon1_atta13	=[	$attacka13,		demon1_atta14] {ai_charge(8);Demon_Melee(-200, '0 0.1763 0', '0 0 0');};
 void()	demon1_atta14	=[	$attacka14,		demon1_atta15] {ai_charge(4);};
 void()	demon1_atta15	=[	$attacka15,		demon1_run1] {ai_charge(4);};
 
@@ -290,27 +290,12 @@ float()	DemonCheckAttack =
 
 //===========================================================================
 
-void(float side)	Demon_Melee =
+void(float side, vector startAngs, vector endAngs)	Demon_Melee =
 {
 	ai_face();
 	walkmove(self.angles_y, 12);	// allow a little closing
-	MeleeAttack(20, 80, 75);
-	/*vector start, end, ofs;
-	if (side < 0)
-	{
-		start = '0 -0.0349 0';
-		end = '0 0.1051 0';
-		ofs = GetRelativeOffset('12 -12 0', self.angles, FALSE);
-	}
-	else
-	{
-		start = '0 0.0349 0';
-		end = '0 -0.1051 0';
-		ofs = GetRelativeOffset('12 12 0', self.angles, FALSE);
-	}
-	
-	MeleeAttackEx(self.origin + ofs, 20, 64, 75, start, end, 0.0524, TRUE, TRUE);*/
-	if (trace_ent.takedamage)
+	float hit = MeleeSweep(self.origin + '0 0 16', 20, 80, 75, startAngs, endAngs, 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
+	if (hit & SWEEP_HIT_ENT)
 	{
 		sound (self, CHAN_WEAPON, "demon/dhit2.wav", 1, ATTN_NORM);
 		makevectors (self.angles);
