@@ -65,8 +65,7 @@ void() dog_bite =
 		return;
 
 	ai_charge(10);
-
-	MeleeAttack(20, 80, 50);
+	MeleeSweep(self.origin, 20, 80, 50, '0 0.0874 0', '0 -0.0874 0', 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
 };
 
 void()	Dog_JumpTouch =
@@ -116,6 +115,7 @@ void() dog_walk8	=[	$walk8 ,	dog_walk1	] {ai_walk(8);};
 
 void() dog_run1		=[	$run1  ,	dog_run2	]
 {
+	self.turn_multi = 0;
 	IdleSound("dog/idle.wav", 0.2);
 	ai_run(18);
 };
@@ -131,7 +131,7 @@ void() dog_run10	=[	$run10  ,	dog_run11	] {ai_run(22);};
 void() dog_run11	=[	$run11  ,	dog_run12	] {ai_run(69);};
 void() dog_run12	=[	$run12  ,	dog_run1	] {ai_run(34);};
 
-void() dog_atta1	=[	$attack1,	dog_atta2	] {ai_charge(10);};
+void() dog_atta1	=[	$attack1,	dog_atta2	] {self.turn_multi = 0.5;ai_charge(10);};
 void() dog_atta2	=[	$attack2,	dog_atta3	] {ai_charge(10);};
 void() dog_atta3	=[	$attack3,	dog_atta4	] {ai_charge(10);};
 void() dog_atta4	=[	$attack4,	dog_atta5	]
