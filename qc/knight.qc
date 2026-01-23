@@ -93,15 +93,15 @@ void()	knight_run1	=[	$runb1,		knight_run2	]
 {
 	self.turn_multi = 0;
 	IdleSound("knight/idle.wav", 0.2);
-	ai_run(33);
+	ai_run(24);
 };
-void()	knight_run2	=[	$runb2,		knight_run3	] {ai_run(41);};
-void()	knight_run3	=[	$runb3,		knight_run4	] {ai_run(27);};
-void()	knight_run4	=[	$runb4,		knight_run5	] {ai_run(14);};
-void()	knight_run5	=[	$runb5,		knight_run6	] {ai_run(33);};
-void()	knight_run6	=[	$runb6,		knight_run7	] {ai_run(41);};
-void()	knight_run7	=[	$runb7,		knight_run8	] {ai_run(29);};
-void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(12);};
+void()	knight_run2	=[	$runb2,		knight_run3	] {ai_run(30);};
+void()	knight_run3	=[	$runb3,		knight_run4	] {ai_run(20);};
+void()	knight_run4	=[	$runb4,		knight_run5	] {ai_run(11);};
+void()	knight_run5	=[	$runb5,		knight_run6	] {ai_run(24);};
+void()	knight_run6	=[	$runb6,		knight_run7	] {ai_run(30);};
+void()	knight_run7	=[	$runb7,		knight_run8	] {ai_run(21);};
+void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(9);};
 
 
 void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
