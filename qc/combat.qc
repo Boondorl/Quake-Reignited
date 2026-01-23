@@ -1240,10 +1240,10 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 						T_Damage(trace_ent, self, self, d, pain, FALSE);
 						if (!(mFlags & SWEEP_NO_PARTICLES))
 							SpawnBlood(dest, '0 0 0', d);
-						
-						if (mFlags & SWEEP_STOP_AT_HIT)
-							break;
 					}
+					
+					if (mFlags & SWEEP_STOP_AT_HIT)
+						break;
 				}
 			}
 			else
