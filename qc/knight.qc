@@ -103,6 +103,14 @@ void()	knight_run6	=[	$runb6,		knight_run7	] {ai_run(30);};
 void()	knight_run7	=[	$runb7,		knight_run8	] {ai_run(21);};
 void()	knight_run8	=[	$runb8,		knight_run1	] {ai_run(9);};
 
+void(float dmg, float pain, vector startAngs, vector endAngs, float clear = 0) knight_slice =
+{
+	float flags = SWEEP_INCLUDE_FIRST;
+	if (clear)
+		flags |= SWEEP_CLEAR;
+	
+	MeleeSweep(self.origin + '0 0 16', dmg, 80, pain, startAngs, endAngs, 0.0874, flags);
+};
 
 void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
 {
@@ -116,10 +124,10 @@ void()	knight_runatk1	=[	$runattack1,		knight_runatk2	]
 void()	knight_runatk2	=[	$runattack2,	knight_runatk3	] {ai_charge_side();};
 void()	knight_runatk3	=[	$runattack3,	knight_runatk4	] {ai_charge_side();};
 void()	knight_runatk4	=[	$runattack4,	knight_runatk5	] {ai_charge_side();};
-void()	knight_runatk5	=[	$runattack5,	knight_runatk6	] {ai_charge_side();MeleeAttack(7,80,35);};
-void()	knight_runatk6	=[	$runattack6,	knight_runatk7	] {ai_charge_side();MeleeAttack(7,80,35);};
-void()	knight_runatk7	=[	$runattack7,	knight_runatk8	] {ai_charge_side();MeleeAttack(7,80,35);};
-void()	knight_runatk8	=[	$runattack8,	knight_runatk9	] {ai_charge_side();MeleeAttack(7,80,35);};
+void()	knight_runatk5	=[	$runattack5,	knight_runatk6	] {ai_charge_side();};
+void()	knight_runatk6	=[	$runattack6,	knight_runatk7	] {ai_charge_side();knight_slice(10, 35, '0 0.3639 0', '0 0 0', TRUE);};
+void()	knight_runatk7	=[	$runattack7,	knight_runatk8	] {ai_charge_side();knight_slice(10, 35, '0 -0.1763 0', '0 0.1763 0', TRUE);};
+void()	knight_runatk8	=[	$runattack8,	knight_runatk9	] {ai_charge_side();knight_slice(10, 35, '0 -0.1763 0', '0 0.1763 0', TRUE);};
 void()	knight_runatk9	=[	$runattack9,	knight_runatk10	] {ai_charge_side();};
 void()	knight_runatk10	=[	$runattack10,	knight_runatk11	] {ai_charge_side();};
 void()	knight_runatk11	=[	$runattack11,	knight_run1	] {ai_charge_side();};
@@ -134,10 +142,10 @@ void()	knight_atk2	=[	$attackb2,		knight_atk3	] {ai_charge(7);};
 void()	knight_atk3	=[	$attackb3,		knight_atk4	] {ai_charge(4);};
 void()	knight_atk4	=[	$attackb4,		knight_atk5	] {ai_charge(0);};
 void()	knight_atk5	=[	$attackb5,		knight_atk6	] {ai_charge(3);};
-void()	knight_atk6	=[	$attackb6,		knight_atk7	] {ai_charge(4); MeleeAttack(8,80,25);};
-void()	knight_atk7	=[	$attackb7,		knight_atk8	] {ai_charge(1); MeleeAttack(8,80,25);};
-void()	knight_atk8	=[	$attackb8,		knight_atk9	] {ai_charge(3); MeleeAttack(8,80,25);};
-void()	knight_atk9	=[	$attackb9,		knight_atk10] {ai_charge(1);};
+void()	knight_atk6	=[	$attackb6,		knight_atk7	] {ai_charge(4);};
+void()	knight_atk7	=[	$attackb7,		knight_atk8	] {ai_charge(1); knight_slice(20, 50, '0.2679 0.0874 0', '0 0 0', TRUE);};
+void()	knight_atk8	=[	$attackb8,		knight_atk9	] {ai_charge(3); knight_slice(20, 50, '0.1763 0.0436 0', '-0.1763 -0.0436 0');};
+void()	knight_atk9	=[	$attackb9,		knight_atk10] {ai_charge(1); knight_slice(20, 50, '-0.2679 -0.0874 0', '0 0 0');};
 void()	knight_atk10=[	$attackb10,		knight_run1	] {ai_charge(5);};
 
 //===========================================================================
