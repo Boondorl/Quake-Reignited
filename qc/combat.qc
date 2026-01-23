@@ -1212,34 +1212,38 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 			float wasBSP = trace_ent.solid == SOLID_BSP;
 			if (trace_ent.takedamage)
 			{
-				hit = SWEEP_HIT_ENT;
-				
-				// Check if we already hit it
-				entity last = self;
-				entity curMelee = self.melee_head;
-				while (curMelee)
+				if (trace_ent != self)
 				{
-					if (curMelee.special_ent == trace_ent)
-						break;
+					hit |= SWEEP_HIT_ENT;
 					
-					last = curMelee;
-					curMelee = curMelee.melee_head;
-				}
-				
-				// Add it to the list and damage it
-				if (!curMelee)
-				{
-					last.melee_head = spawn();
-					last.melee_head.special_ent = trace_ent;
-					trace_ent.axhitme = TRUE;
+					// Check if we already hit it
+					entity last = self;
+					entity curMelee = self.melee_head;
+					while (curMelee)
+					{
+						if (curMelee.special_ent == trace_ent)
+							break;
+						
+						last = curMelee;
+						curMelee = curMelee.melee_head;
+					}
 					
-					float d = ((self.flags & FL_CLIENT) && trace_ent.is_zombie) ? halfDmg : damage;
-					T_Damage(trace_ent, self, self, d, pain, FALSE);
-					if (!(mFlags & SWEEP_NO_PARTICLES))
-						SpawnBlood(dest, '0 0 0', d);
-					
-					if (mFlags & SWEEP_STOP_AT_HIT)
-						break;
+					// Add it to the list and damage it
+					if (!curMelee)
+					{
+						last.melee_head = spawn();
+						last.melee_head.special_ent = trace_ent;
+						if (self.flags & FL_CLIENT)
+							trace_ent.axhitme = TRUE;
+						
+						float d = ((self.flags & FL_CLIENT) && trace_ent.is_zombie) ? halfDmg : damage;
+						T_Damage(trace_ent, self, self, d, pain, FALSE);
+						if (!(mFlags & SWEEP_NO_PARTICLES))
+							SpawnBlood(dest, '0 0 0', d);
+						
+						if (mFlags & SWEEP_STOP_AT_HIT)
+							break;
+					}
 				}
 			}
 			else

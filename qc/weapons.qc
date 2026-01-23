@@ -77,7 +77,7 @@ W_FireAxe
 void() W_FireAxe =
 {
 	local vector source = self.origin + self.view_ofs;
-	float hit = MeleeSweep(source, 54, 64, 75, '0 -0.1763 0', '0 0.1763 0', 0.0524, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
+	float hit = MeleeSweep(source, 54, 64, 75, '0 -0.3639 0', '0 0.3639 0', 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
 	if (hit == SWEEP_HIT_NONE)
 		return;
 	
