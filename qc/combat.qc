@@ -1170,12 +1170,12 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 	vector sweepStep = (endOfs - startOfs) * (1 / steps);
 	float i = (mFlags & SWEEP_INCLUDE_FIRST) ? 0 : 1;
 	
-	// TODO: Remove me when done testing
-	entity point = spawn();
+	// For debugging
+	/*entity point = spawn();
 	setmodel(point, "progs/s_bubble.spr");
 	setorigin(point, pos);
 	point.nextthink = time + 0.2;
-	point.think = SUB_Remove;
+	point.think = SUB_Remove;*/
 	
 	float hit = SWEEP_HIT_NONE;
 	float halfDmg = damage * 0.5;
@@ -1269,12 +1269,12 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 			ignore = trace_ent;
 		}
 		
-		// TODO: Remove me when done testing
-		point = spawn();
+		// For debugging
+		/*point = spawn();
 		setmodel(point, "progs/s_bubble.spr");
 		setorigin(point, trace_endpos);
 		point.nextthink = time + 0.2;
-		point.think = SUB_Remove;
+		point.think = SUB_Remove;*/
 	}
 	
 	return hit;
