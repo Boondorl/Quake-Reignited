@@ -136,14 +136,11 @@ chainsaw
 FIXME
 ================
 */
-void(float dmg, float pain, float side, vector startAngs, vector endAngs, float clearHits = 0) chainsaw =
+void(float dmg, float pain, float side, vector startAngs, vector endAngs) chainsaw =
 {
 	ai_charge(10);
-	float flags = SWEEP_INCLUDE_FIRST;
-	if (clearHits)
-		flags |= SWEEP_CLEAR;
 	
-	float hit = MeleeSweep(self.origin + '0 0 16', dmg, 80, pain, startAngs, endAngs, 0.0874, flags);
+	float hit = MeleeSweep(self.origin + '0 0 16', dmg, 80, pain, startAngs, endAngs, 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
 	if ((hit & SWEEP_HIT_ENT) && side)
 	{
 		makevectors (self.angles);
@@ -217,9 +214,9 @@ void() ogre_swing1	=[	$swing1,		ogre_swing2	]
 void() ogre_swing2	=[	$swing2,		ogre_swing3	] {ai_charge(1);};
 void() ogre_swing3	=[	$swing3,		ogre_swing4	] {ai_charge(4);};
 void() ogre_swing4	=[	$swing4,		ogre_swing5	] {ai_charge(13);};
-void() ogre_swing5	=[	$swing5,		ogre_swing6	] {ai_charge(9); chainsaw(20, 75, 0, '0 -0.3639 0', '0 0.3639 0', TRUE);self.angles_y += random()*25;};
-void() ogre_swing6	=[	$swing6,		ogre_swing7	] {chainsaw(20, 75, 200, '0 -0.3639 0', '0 0.3639 0');self.angles_y += random()* 25;};
-void() ogre_swing7	=[	$swing7,		ogre_swing8	] {chainsaw(20, 75, -200, '0 -0.3639 0', '0 0.3639 0');self.angles_y += random()* 25;};
+void() ogre_swing5	=[	$swing5,		ogre_swing6	] {ai_charge(9); chainsaw(10, 50, 0, '0 0 0', '0 0.3639 0');self.angles_y += random()*25;};
+void() ogre_swing6	=[	$swing6,		ogre_swing7	] {chainsaw(10, 50, 200, '0 -0.1763 0', '0 0.1763 0');self.angles_y += random()* 25;};
+void() ogre_swing7	=[	$swing7,		ogre_swing8	] {chainsaw(10, 50, -200, '0 -0.3639 0', '0 0 0');self.angles_y += random()* 25;};
 void() ogre_swing8	=[	$swing8,		ogre_swing9	] {ai_charge(10);self.angles_y += random()* 25;};
 void() ogre_swing9	=[	$swing9,		ogre_swing10 ] {ai_charge(10);self.angles_y += random()* 25;};
 void() ogre_swing10	=[	$swing10,		ogre_swing11 ] {ai_charge(10);self.angles_y += random()* 25;};
@@ -240,9 +237,9 @@ void() ogre_smash4	=[	$smash4,		ogre_smash5	] {ai_charge(1);};
 void() ogre_smash5	=[	$smash5,		ogre_smash6	] {ai_charge(4);};
 void() ogre_smash6	=[	$smash6,		ogre_smash7	] {ai_charge(14);};
 void() ogre_smash7	=[	$smash7,		ogre_smash8	] {ai_charge(14);};
-void() ogre_smash8	=[	$smash8,		ogre_smash9	] {ai_charge(10); chainsaw(30, 100, 0, '0 -0.0874 0', '0.1763 0.0874 0', TRUE);};
-void() ogre_smash9	=[	$smash9,		ogre_smash10 ] {ai_charge(13); chainsaw(30, 100, 0, '0 -0.0874 0', '0 0.0874 0');};
-void() ogre_smash10	=[	$smash10,		ogre_smash11 ] {chainsaw(30, 100, 1, '0 -0.0874 0', '0 0.0874 0');};
+void() ogre_smash8	=[	$smash8,		ogre_smash9	] {ai_charge(10); chainsaw(15, 75, 0, '0 -0.0874 0', '0.1763 0.0874 0');};
+void() ogre_smash9	=[	$smash9,		ogre_smash10 ] {ai_charge(13); chainsaw(15, 75, 0, '0 -0.0874 0', '0 0.0874 0');};
+void() ogre_smash10	=[	$smash10,		ogre_smash11 ] {chainsaw(15, 75, 1, '0 -0.0874 0', '0 0.0874 0');};
 void() ogre_smash11	=[	$smash11,		ogre_smash12 ] { ai_charge(12); };
 void() ogre_smash12	=[	$smash12,		ogre_smash13 ] {ai_charge(0);};
 void() ogre_smash13	=[	$smash13,		ogre_smash14 ] {ai_charge(4);};
