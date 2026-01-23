@@ -1214,8 +1214,6 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 			{
 				if (trace_ent != self)
 				{
-					hit |= SWEEP_HIT_ENT;
-					
 					// Check if we already hit it
 					entity last = self;
 					entity curMelee = self.melee_head;
@@ -1231,6 +1229,8 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 					// Add it to the list and damage it
 					if (!curMelee)
 					{
+						hit |= SWEEP_HIT_ENT;
+						
 						last.melee_head = spawn();
 						last.melee_head.special_ent = trace_ent;
 						if (self.flags & FL_CLIENT)
