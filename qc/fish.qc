@@ -108,7 +108,7 @@ void() fish_melee =
 
 	ai_charge(10);
 	sound (self, CHAN_VOICE, "fish/bite.wav", 1, ATTN_NORM);
-	MeleeAttack(7, 64, 20);
+	MeleeSweep(self.origin, 7, 64, 20, '0 0.0874 0', '0 -0.0874 0', 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
 };
 
 void() f_attack6;
