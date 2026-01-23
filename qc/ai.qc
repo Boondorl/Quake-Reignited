@@ -622,12 +622,32 @@ void() ai_run_slide =
 	else
 		ofs = -90;
 
-	if (walkmove (self.ideal_yaw + ofs, movedist))
-		return;
-
-	self.lefty = !self.lefty;
-
-	walkmove (self.ideal_yaw - ofs, movedist);
+	// Similar to ai_run, this needs to be broken down into steps.
+	float steps;
+	if (movedist > 0)
+	{
+		steps = ceil(movedist / self.size.x);
+		movedist /= steps;
+	}
+	
+	// Use only the initial step to determine which way to move. After that, just
+	// move as far as you can in that direction.
+	if (!walkmove(self.ideal_yaw + ofs, movedist))
+	{
+		self.lefty = !self.lefty;
+		ofs = -ofs;
+		if (!walkmove(self.ideal_yaw + ofs, movedist))
+			return;
+	}
+	
+	entity en = self.enemy;
+	self.enemy = world;
+	for (float i = 1; i < steps; ++i)
+	{
+		if (!walkmove(self.ideal_yaw + ofs, movedist))
+			break;
+	}
+	self.enemy = en;
 };
 
 
@@ -750,6 +770,34 @@ void(float dist) ai_run =
 		return;
 	}
 
-	// head straight in
-	movetogoal (dist);		// done in C code...
+	// Break the movement down into steps to avoid monsters clipping into geometry.
+	float steps;
+	if (dist > 0)
+		steps = ceil(dist / self.size.x);
+	
+	if (steps <= 1)
+	{
+		movetogoal(dist);
+	}
+	else
+	{
+		dist /= steps;
+		
+		vector prevOrig = self.origin;
+		movetogoal(dist);
+		// Didn't move; either stuck or turning, so leave it at that.
+		if (self.origin == prevOrig)
+			return;
+		
+		// The initial movetogoal call already adjusts the z height alongside other
+		// checks, so remove it for all subsequent moves.
+		entity en = self.enemy;
+		self.enemy = world;
+		for (float i = 1; i < steps; ++i)
+		{
+			if (!walkmove(self.ideal_yaw, dist))
+				break;
+		}
+		self.enemy = en;
+	}
 };

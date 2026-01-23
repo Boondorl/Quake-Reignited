@@ -278,7 +278,7 @@ void() monster_shalrath =
 	self.movetype = MOVETYPE_STEP;
 
 	setmodel (self, "progs/shalrath.mdl");
-	setsize (self, '-32 -32 -24', '32 32 40');
+	setsize (self, VEC_HULL2_MIN, VEC_HULL2_MAX);
 	self.health = 360;
 	self.gib_health = -72;
 	self.pain_threshold = 270;

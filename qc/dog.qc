@@ -345,7 +345,7 @@ void() monster_dog =
 
 	setmodel (self, "progs/dog.mdl");
 
-	setsize (self, '-28 -28 -24', '28 28 24');
+	setsize (self, VEC_HULL_MIN, '16 16 24');
 	self.health = 36;
 	self.gib_health = -54;
 	self.pain_threshold = 18;

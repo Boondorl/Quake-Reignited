@@ -289,7 +289,7 @@ void() monster_knight =
 
 	setmodel (self, "progs/knight.mdl");
 
-	setsize (self, '-16 -16 -24', '16 16 32');
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 	self.health = 72;
 	self.pain_threshold = 72;
 	self.gib_health = -68;

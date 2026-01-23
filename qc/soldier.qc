@@ -358,7 +358,7 @@ void() monster_army =
 
 	setmodel (self, "progs/soldier.mdl");
 
-	setsize (self, '-16 -16 -24', '16 16 32');
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
 	self.health = 36;
 	self.gib_health = -54;
 	self.pain_threshold = 18;

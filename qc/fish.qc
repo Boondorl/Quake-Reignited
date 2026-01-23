@@ -243,7 +243,7 @@ void() monster_fish =
 
 	setmodel (self, "progs/fish.mdl");
 
-	setsize (self, '-16 -16 -24', '16 16 16');
+	setsize (self, VEC_HULL_MIN, '16 16 16');
 	self.health = 18;
 	self.pain_threshold = 1;
 	self.gib_health = -54;
