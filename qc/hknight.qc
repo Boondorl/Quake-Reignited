@@ -279,24 +279,29 @@ void()	hknight_magicc11 =[	$magicc11,	hknight_run1] {ai_face();hknight_shot(0.32
 
 //===========================================================================
 
+void(float charge) hknight_grinder =
+{
+	ai_charge(charge);
+	MeleeSweep(self.origin + '0 0 16', 5, 80, 35, '0.1763 0.1763 0', '-0.1763 -0.1763 0', 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
+	MeleeSweep(self.origin + '0 0 16', 5, 80, 35, '0.1763 -0.1763 0', '-0.1763 0.1763 0', 0.0874, SWEEP_INCLUDE_FIRST);
+};
+
 void()	hknight_char_b1	=[	$char_b1,	hknight_char_b2	]
 {
 	self.turn_multi = 0.5;
-	ai_charge(27);
-	MeleeAttack(5, 80, 35);
+	hknight_grinder(27);
 	if (random() > 0.5)
 		sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
 	else
 		sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
 };
-void()	hknight_char_b2	=[	$char_b2,	hknight_char_b3	] {ai_charge(21); MeleeAttack(5, 80, 35);};
-void()	hknight_char_b3	=[	$char_b3,	hknight_char_b4	] {ai_charge(14); MeleeAttack(5, 80, 35);};
-void()	hknight_char_b4	=[	$char_b4,	hknight_char_b5	] {ai_charge(27); MeleeAttack(5, 80, 35);};
-void()	hknight_char_b5	=[	$char_b5,	hknight_char_b6	] {ai_charge(22); MeleeAttack(5, 80, 35);};
+void()	hknight_char_b2	=[	$char_b2,	hknight_char_b3	] {hknight_grinder(21);};
+void()	hknight_char_b3	=[	$char_b3,	hknight_char_b4	] {hknight_grinder(14);};
+void()	hknight_char_b4	=[	$char_b4,	hknight_char_b5	] {hknight_grinder(27);};
+void()	hknight_char_b5	=[	$char_b5,	hknight_char_b6	] {hknight_grinder(22);};
 void()	hknight_char_b6	=[	$char_b6,	hknight_run1	]
 {
-	ai_charge(9);
-	MeleeAttack(5, 80, 35);
+	hknight_grinder(9);
 	--self.cnt;
 	if (self.cnt > 0)
 	{
@@ -312,17 +317,25 @@ void()	hknight_char_b6	=[	$char_b6,	hknight_run1	]
 
 void() hknight_char_a9;
 
+void(float dmg, float pain, vector startAngs, vector endAngs, float clear = 0) hknight_slice =
+{
+	float flags = SWEEP_INCLUDE_FIRST;
+	if (clear)
+		flags |= SWEEP_CLEAR;
+	
+	MeleeSweep(self.origin + '0 0 16', dmg, 80, pain, startAngs, endAngs, 0.0874, flags);
+};
+
 void()	hknight_char_a1	=[	$char_a1,	hknight_char_a2	] {self.turn_multi = 0.5; ai_charge(22);};
 void()	hknight_char_a2	=[	$char_a2,	hknight_char_a3	] {ai_charge(27);};
 void()	hknight_char_a3	=[	$char_a3,	hknight_char_a4	] {ai_charge(20);};
 void()	hknight_char_a4	=[	$char_a4,	hknight_char_a5	] {ai_charge(17);};
 void()	hknight_char_a5	=[	$char_a5,	hknight_char_a6	] {ai_charge(15);};
-void()	hknight_char_a6	=[	$char_a6,	hknight_char_a7	] {ai_charge(21); MeleeAttack(5, 80, 35);};
-void()	hknight_char_a7	=[	$char_a7,	hknight_char_a8	] {ai_charge(23); MeleeAttack(5, 80, 35);};
+void()	hknight_char_a6	=[	$char_a6,	hknight_char_a7	] {ai_charge(21); hknight_slice(15, 50, '0.2216 0.3639 0', '0 0 0', TRUE);};
+void()	hknight_char_a7	=[	$char_a7,	hknight_char_a8	] {ai_charge(23); hknight_slice(15, 50, '0 0 0', '-0.2216 -0.3639 0');};
 void()	hknight_char_a8	=[	$char_a8,	hknight_run1	]
 {
 	ai_charge(14);
-	MeleeAttack(5, 80, 35);
 	if (InAttackDirection(self.enemy, 60))
 	{
 		if (CheckChargeAttack(self.enemy, 0, 160))
@@ -332,9 +345,9 @@ void()	hknight_char_a8	=[	$char_a8,	hknight_run1	]
 void()	hknight_char_a9	=[	$char_a9,	hknight_char_a10	] {ai_charge(22);};
 void()	hknight_char_a10=[	$char_a10,	hknight_char_a11	] {ai_charge(21);};
 void()	hknight_char_a11=[	$char_a11,	hknight_char_a12	] {ai_charge(20);};
-void()	hknight_char_a12=[	$char_a12,	hknight_char_a13	] {ai_charge(16); MeleeAttack(5, 80, 35);};
-void()	hknight_char_a13=[	$char_a13,	hknight_char_a14	] {ai_charge(15); MeleeAttack(5, 80, 35);};
-void()	hknight_char_a14=[	$char_a14,	hknight_char_a15	] {ai_charge(27); MeleeAttack(5, 80, 35);};
+void()	hknight_char_a12=[	$char_a12,	hknight_char_a13	] {ai_charge(16); hknight_slice(20, 75, '0 0 0', '0 -0.3639 0', TRUE);};
+void()	hknight_char_a13=[	$char_a13,	hknight_char_a14	] {ai_charge(15); hknight_slice(20, 75, '0 -0.1763 0', '0 0.1763 0');};
+void()	hknight_char_a14=[	$char_a14,	hknight_char_a15	] {ai_charge(27); hknight_slice(20, 75, '0 0.3639 0', '0 0 0');};
 void()	hknight_char_a15=[	$char_a15,	hknight_char_a16	] {ai_charge(23);};
 void()	hknight_char_a16=[	$char_a16,	hknight_run1	]
 {
@@ -356,11 +369,11 @@ void()	hknight_slice1	=[	$slice1,	hknight_slice2	] {self.turn_multi = 0.5; ai_ch
 void()	hknight_slice2	=[	$slice2,	hknight_slice3	] {ai_charge(6);};
 void()	hknight_slice3	=[	$slice3,	hknight_slice4	] {ai_charge(13);};
 void()	hknight_slice4	=[	$slice4,	hknight_slice5	] {ai_charge(4);};
-void()	hknight_slice5	=[	$slice5,	hknight_slice6	] {ai_charge(7); MeleeAttack(5, 80, 20);};
-void()	hknight_slice6	=[	$slice6,	hknight_slice7	] {ai_charge(15); MeleeAttack(5, 80, 20);};
-void()	hknight_slice7	=[	$slice7,	hknight_slice8	] {ai_charge(8); MeleeAttack(5, 80, 20);};
-void()	hknight_slice8	=[	$slice8,	hknight_slice9	] {ai_charge(2); MeleeAttack(5, 80, 20);};
-void()	hknight_slice9	=[	$slice9,	hknight_slice10	] {MeleeAttack(5, 80, 20);};
+void()	hknight_slice5	=[	$slice5,	hknight_slice6	] {ai_charge(7);};
+void()	hknight_slice6	=[	$slice6,	hknight_slice7	] {ai_charge(15); hknight_slice(20, 75, '0 0 0', '0 0.3639 0', TRUE);};
+void()	hknight_slice7	=[	$slice7,	hknight_slice8	] {ai_charge(8); hknight_slice(20, 75, '0 0 0', '0 -0.3639 0');};
+void()	hknight_slice8	=[	$slice8,	hknight_slice9	] {ai_charge(2);};
+void()	hknight_slice9	=[	$slice9,	hknight_slice10	] {ai_charge(0);};
 void()	hknight_slice10	=[	$slice10,	hknight_run1	] {ai_charge(3);};
 
 //===========================================================================
@@ -369,11 +382,11 @@ void()	hknight_smash1	=[	$smash1,	hknight_smash2	] {self.turn_multi = 0.5; ai_ch
 void()	hknight_smash2	=[	$smash2,	hknight_smash3	] {ai_charge(13);};
 void()	hknight_smash3	=[	$smash3,	hknight_smash4	] {ai_charge(9);};
 void()	hknight_smash4	=[	$smash4,	hknight_smash5	] {ai_charge(11);};
-void()	hknight_smash5	=[	$smash5,	hknight_smash6	] {ai_charge(10); MeleeAttack(5, 80, 35);};
-void()	hknight_smash6	=[	$smash6,	hknight_smash7	] {ai_charge(7); MeleeAttack(5, 80, 35);};
-void()	hknight_smash7	=[	$smash7,	hknight_smash8	] {ai_charge(12); MeleeAttack(5, 80, 35);};
-void()	hknight_smash8	=[	$smash8,	hknight_smash9	] {ai_charge(2); MeleeAttack(5, 80, 35);};
-void()	hknight_smash9	=[	$smash9,	hknight_smash10	] {ai_charge(3); MeleeAttack(5, 80, 35);};
+void()	hknight_smash5	=[	$smash5,	hknight_smash6	] {ai_charge(10);};
+void()	hknight_smash6	=[	$smash6,	hknight_smash7	] {ai_charge(7);};
+void()	hknight_smash7	=[	$smash7,	hknight_smash8	] {ai_charge(12);};
+void()	hknight_smash8	=[	$smash8,	hknight_smash9	] {ai_charge(2); hknight_slice(30, 100, '0.2679 0.0874 0', '0 0 0', TRUE);};
+void()	hknight_smash9	=[	$smash9,	hknight_smash10	] {ai_charge(3); hknight_slice(30, 100, '-0.2679 -0.0874 0', '0 0 0');};
 void()	hknight_smash10	=[	$smash10,	hknight_smash11	] {ai_charge(1);};
 void()	hknight_smash11	=[	$smash11,	hknight_run1	] {ai_charge(1);};
 
@@ -387,15 +400,14 @@ void()	hknight_watk3	=[	$w_attack3,	hknight_watk4	] {ai_charge(1);};
 void()	hknight_watk4	=[	$w_attack4,	hknight_watk5	] {ai_charge(1);};
 void()	hknight_watk5	=[	$w_attack5,	hknight_watk6	] {ai_charge(1);};
 void()	hknight_watk6	=[	$w_attack6,	hknight_watk7	] {ai_charge(1);};
-void()	hknight_watk7	=[	$w_attack7,	hknight_watk8	] {ai_charge(1); MeleeAttack(5, 80, 35);};
-void()	hknight_watk8	=[	$w_attack8,	hknight_watk9	] {ai_charge(4); MeleeAttack(5, 80, 35);};
-void()	hknight_watk9	=[	$w_attack9,	hknight_watk10	] {ai_charge(5); MeleeAttack(5, 80, 35);};
-void()	hknight_watk10	=[	$w_attack10,	hknight_watk11	] {ai_charge(3); MeleeAttack(5, 80, 35);};
-void()	hknight_watk11	=[	$w_attack11,	hknight_watk12	] {ai_charge(2); MeleeAttack(5, 80, 35);};
+void()	hknight_watk7	=[	$w_attack7,	hknight_watk8	] {ai_charge(1);};
+void()	hknight_watk8	=[	$w_attack8,	hknight_watk9	] {ai_charge(4);};
+void()	hknight_watk9	=[	$w_attack9,	hknight_watk10	] {ai_charge(5); hknight_slice(20, 75, '0.2216 0.3639 0', '0 0 0', TRUE);};
+void()	hknight_watk10	=[	$w_attack10,	hknight_watk11	] {ai_charge(3); hknight_slice(20, 75, '0 0 0', '-0.2216 -0.3639 0');};
+void()	hknight_watk11	=[	$w_attack11,	hknight_watk12	] {ai_charge(2);};
 void()	hknight_watk12	=[	$w_attack12,	hknight_run1	]
 {
 	ai_charge(2);
-	MeleeAttack(5, 80, 35);
 	if (InAttackDirection(self.enemy, 60))
 	{
 		if (CheckMeleeRange(self.enemy, 96))
@@ -406,9 +418,9 @@ void()	hknight_watk13	=[	$w_attack13,	hknight_watk14	] {ai_charge(1);};
 void()	hknight_watk14	=[	$w_attack14,	hknight_watk15	] {ai_charge(1);};
 void()	hknight_watk15	=[	$w_attack15,	hknight_watk16	] {ai_charge(1);};
 void()	hknight_watk16	=[	$w_attack16,	hknight_watk17	] {ai_charge(1);};
-void()	hknight_watk17	=[	$w_attack17,	hknight_watk18	] {ai_charge(1); MeleeAttack(8, 80, 35);};
-void()	hknight_watk18	=[	$w_attack18,	hknight_watk19	] {ai_charge(3); MeleeAttack(8, 80, 35);};
-void()	hknight_watk19	=[	$w_attack19,	hknight_watk20	] {ai_charge(4); MeleeAttack(8, 80, 35);};
+void()	hknight_watk17	=[	$w_attack17,	hknight_watk18	] {ai_charge(1); hknight_slice(25, 75, '0 0 0', '0 -0.3639 0', TRUE);};
+void()	hknight_watk18	=[	$w_attack18,	hknight_watk19	] {ai_charge(3); hknight_slice(25, 75, '0 -0.1763 0', '0 0.1763 0');};
+void()	hknight_watk19	=[	$w_attack19,	hknight_watk20	] {ai_charge(4); hknight_slice(25, 75, '0 0.3639 0', '0 0 0');};
 void()	hknight_watk20	=[	$w_attack20,	hknight_watk21	] {ai_charge(6);};
 void()	hknight_watk21	=[	$w_attack21,	hknight_watk22	] {ai_charge(7);};
 void()	hknight_watk22	=[	$w_attack22,	hknight_run1	] {ai_charge(3);};
