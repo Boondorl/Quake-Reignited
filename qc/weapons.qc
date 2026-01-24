@@ -1003,7 +1003,7 @@ void() W_Attack =
 	{
 		player_shot1 ();
 		W_FireSuperShotgun ();
-		self.attack_finished = time + FRAME*65;
+		self.attack_finished = time + FRAME*62;
 	}
 	else if (self.weapon == IT_NAILGUN)
 	{
@@ -1020,7 +1020,7 @@ void() W_Attack =
 	{
 		player_rocket1();
 		W_FireGrenade();
-		self.attack_finished = time + FRAME*50;
+		self.attack_finished = time + FRAME*51;
 	}
 	else if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
