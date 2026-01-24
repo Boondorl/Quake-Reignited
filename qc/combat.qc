@@ -1150,10 +1150,10 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 			if (pitch > 180)
 				pitch -= 360;
 			
-			if (pitch > 15)
-				pitch = 15;
-			else if (pitch < -15)
-				pitch = -15;
+			if (pitch > 45)
+				pitch = 45;
+			else if (pitch < -45)
+				pitch = -45;
 			
 			angs_x = -pitch;
 		}
