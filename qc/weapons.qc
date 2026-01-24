@@ -685,12 +685,8 @@ void() W_FireGrenade =
 	missile.touch = GrenadeTouch;
 	missile.avelocity = '304 304 304';
 	
-	local float p = missile.angles_x;
-	if (p > 90) // thanks, Kex
-		p -= 360;
-	
 	local float spd = vlen(missile.velocity);
-	missile.velocity = normalize(missile.velocity/spd + v_up*0.3152*(1 - fabs(p)/90)) * spd;
+	missile.velocity = normalize(missile.velocity/spd + v_up*GetPitchOffset(missile.angles_x, 0.3152)) * spd;
 	missile.angles = vectoangles(missile.velocity);
 	
 	self.punchangle_x = -2;

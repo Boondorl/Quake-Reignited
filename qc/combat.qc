@@ -595,6 +595,13 @@ float() CheckLoS =
 	return trace_ent == self.enemy || trace_ent.classname == "player";
 };
 
+float(float pitch, float base) GetPitchOffset =
+{
+	if (pitch > 90)
+		pitch -= 360;
+	return base * (1 - fabs(pitch)/90) * (cvar("sv_gravity") / 800);
+};
+
 /*
 ============
 FireProjectileAtEnemy
@@ -672,11 +679,7 @@ entity(vector orig, vector ofs, float speed, float lifetime, string model, float
 	{
 		makevectors(missile.angles);
 		
-		float p = missile.angles.x;
-		if (p > 90)
-			p -= 360;
-		
-		missile.velocity = normalize(missile.velocity/speed + v_up*0.3639*(1 - fabs(p)/90)) * speed;
+		missile.velocity = normalize(missile.velocity/speed + v_up*GetPitchOffset(missile.angles.x, 0.3639)) * speed;
 		missile.angles = vectoangles(missile.velocity);
 	}
 	
