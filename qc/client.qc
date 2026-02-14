@@ -1469,6 +1469,8 @@ void(entity targ, entity attacker) ClientObituary =
 					bprint (" was slain by a Scrag\n");
 				if (attacker.classname == "monster_zombie")
 					bprint (" joined the Zombies\n");
+				if (attacker.classname == "monster_boss")
+					bprint (" became one with Chthon\n");
 
 				return;
 			}
