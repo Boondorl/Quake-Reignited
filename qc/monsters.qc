@@ -120,13 +120,13 @@ void() walkmonster_start_go =
 			self.th_walk ();
 		else
 		{
-			self.pausetime = 99999999;
+			self.pausetime = 9999999;
 			self.th_stand ();
 		}
 	}
 	else
 	{
-		self.pausetime = 99999999;
+		self.pausetime = 9999999;
 		self.th_stand ();
 	}
 
@@ -181,13 +181,13 @@ void() flymonster_start_go =
 			self.th_walk ();
 		else
 		{
-			self.pausetime = 99999999;
+			self.pausetime = 9999999;
 			self.th_stand ();
 		}
 	}
 	else
 	{
-		self.pausetime = 99999999;
+		self.pausetime = 9999999;
 		self.th_stand ();
 	}
 };
@@ -236,7 +236,7 @@ void() swimmonster_start_go =
 	}
 	else
 	{
-		self.pausetime = 99999999;
+		self.pausetime = 9999999;
 		self.th_stand ();
 	}
 
