@@ -188,26 +188,58 @@ void() SetUnblocking =
 AccumulatePain
 ============
 */
-void(entity targ, float pain, entity attacker, float damage) AccumulatePain =
+void(float pain, entity attacker, float damage, float knockback) AccumulatePain =
 {
-	if (targ.pain_finished > time || self.in_pain || targ.pain_threshold <= 0 || pain <= 0 || (targ.touch && targ.touch != SUB_Null))
+	if (self.classname == "player")
 		return;
-	if (targ.classname == "player")
-		return;
+
+	float force = knockback && self.touch && self.touch != SUB_Null;
+	if (!force)
+	{
+		if (self.pain_finished > time || self.in_pain || self.pain_threshold <= 0 || pain <= 0 || (self.touch && self.touch != SUB_Null))
+			return;
+	}
 	
-	targ.pain_amount += pain;
-	if (targ.pain_amount >= targ.pain_threshold)
+	self.pain_amount += pain;
+	if (force || self.pain_amount >= self.pain_threshold)
 	{
 		self.in_pain = TRUE;
-		targ.pain_amount = 0;
-		targ.in_attack = FALSE;
-		targ.attack_state = AS_STRAIGHT; // cancel whatever attack they're in
-		targ.th_pain(attacker, damage);
+		self.pain_amount = 0;
+		self.in_attack = FALSE;
+		self.attack_state = AS_STRAIGHT; // cancel whatever attack they're in
+		if (self.touch)
+			self.touch = __NULL__;
+		self.th_pain(attacker, damage);
 		
-		local entity o = self;
-		self = targ;
+		if (knockback && !(self.flags & (FL_FLY | FL_SWIM)))
+		{
+			vector dir;
+			if (attacker && attacker != self)
+			{
+				dir = self.origin - attacker.origin;
+				dir = normalize([dir.x, dir.y, 0.0]) * 192.0;
+			}
+			else
+			{
+				vector f = v_forward;
+				vector r = v_right;
+				vector u = v_up;
+
+				makevectors([0.0, self.angles.y, 0.0]);
+				dir = -v_forward * 192.0;
+
+				v_forward = f;
+				v_right = r;
+				v_up = u;
+			}
+			if (self.flags & (FL_ONGROUND | FL_PARTIALGROUND))
+				dir.z = 192.0;
+
+			self.velocity = dir;
+			self.flags &= ~(FL_ONGROUND | FL_PARTIALGROUND);
+		}
+		
 		SUB_AttackFinished(0.8, 0.8, TRUE);
-		self = o;
 	}
 }
 
@@ -302,7 +334,7 @@ The damage is coming from inflictor, but get mad at attacker
 This should be the only function that ever reduces health.
 ============
 */
-void(entity targ, entity inflictor, entity attacker, float damage, float pain, float ignore_armor) T_Damage =
+void(entity targ, entity inflictor, entity attacker, float damage, float pain, float ignore_armor, float knockback = 0) T_Damage =
 {
 	if (!targ.takedamage)
 		return;
@@ -430,7 +462,7 @@ void(entity targ, entity inflictor, entity attacker, float damage, float pain, f
 	if (self.th_pain)
 	{
 		if (self.flags & FL_MONSTER)
-			AccumulatePain(targ, pain, attacker, take);
+			AccumulatePain(pain, attacker, take, knockback);
 		else
 			self.th_pain(attacker, damage);
 	}
@@ -1107,6 +1139,7 @@ float SWEEP_INCLUDE_FIRST = 1;
 float SWEEP_CLEAR = 1<<1;
 float SWEEP_STOP_AT_HIT = 1<<2;
 float SWEEP_NO_PARTICLES = 1<<3;
+float SWEEP_KNOCKBACK = 1<<4;
 float(vector pos, float damage, float dist, float pain, vector startOfs, vector endOfs, float angStep, float mFlags) MeleeSweep =
 {
 	// Delete the already hit list if requested (usually at the start of a new attack)
@@ -1240,7 +1273,7 @@ float(vector pos, float damage, float dist, float pain, vector startOfs, vector 
 							trace_ent.axhitme = TRUE;
 						
 						float d = ((self.flags & FL_CLIENT) && trace_ent.is_zombie) ? halfDmg : damage;
-						T_Damage(trace_ent, self, self, d, pain, FALSE);
+						T_Damage(trace_ent, self, self, d, pain, FALSE, !!(mFlags & SWEEP_KNOCKBACK));
 						if (!(mFlags & SWEEP_NO_PARTICLES))
 							SpawnBlood(dest, '0 0 0', d);
 					}

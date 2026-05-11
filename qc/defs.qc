@@ -770,7 +770,7 @@ void() SUB_Remove;
 //
 //	combat.qc
 //
-void(entity targ, entity inflictor, entity attacker, float damage, float pain, float ignore_armor) T_Damage;
+
 
 
 float (entity e, float healamount, float ignore) T_Heal; // health function

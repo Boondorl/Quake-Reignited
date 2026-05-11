@@ -18,7 +18,7 @@
 ***  See file 'LICENSE' for details.
 ************************************************************************************/
 
-void (entity targ, entity inflictor, entity attacker, float damage, float pain, float ignore_armor) T_Damage;
+
 void () player_run;
 void(entity inflictor, entity attacker, float max_damage, float min_damage, float dist, float pain, entity impact) T_RadiusDamage;
 void(vector org, vector vel, float damage) SpawnBlood;
@@ -77,7 +77,7 @@ W_FireAxe
 void() W_FireAxe =
 {
 	local vector source = self.origin + self.view_ofs;
-	float hit = MeleeSweep(source, 54, 64, 75, '0 -0.3639 0', '0 0.3639 0', 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR);
+	float hit = MeleeSweep(source, 54, 64, 75, '0 -0.3639 0', '0 0.3639 0', 0.0874, SWEEP_INCLUDE_FIRST|SWEEP_CLEAR|SWEEP_KNOCKBACK);
 	if (hit == SWEEP_HIT_NONE)
 		return;
 	

@@ -103,7 +103,7 @@ void() sham_run6       =[      $run6,        sham_run1      ]
 
 void(vector startAngs, vector endAngs, float clear = 0) sham_swing =
 {
-	float flags = SWEEP_INCLUDE_FIRST;
+	float flags = SWEEP_INCLUDE_FIRST | SWEEP_KNOCKBACK;
 	if (clear)
 		flags |= SWEEP_CLEAR;
 	
