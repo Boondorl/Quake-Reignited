@@ -513,8 +513,6 @@ float	AS_MELEE		= 3;
 float	AS_MISSILE		= 4;
 
 float   TRACK_RANGE		 = 400;
-float	INACCURACY_RANGE = 400;
-float   INACCURACY_DIST  = 200;
 
 //
 // player only fields

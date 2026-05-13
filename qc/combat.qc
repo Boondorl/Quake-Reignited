@@ -546,55 +546,88 @@ void(entity attacker, float damage) T_BeamDamage =
 	}
 };
 
+float sqrt(float f, float acc = 0.001)
+{
+	if (f < 0.0)
+		error("Non-real answer in sqrt");
+	
+	if (!f || f == 1.0)
+		return f;
+	
+	float root;
+	for (float x = (f < 1.0 ? 1.0 : f * 0.5);; x = root)
+	{
+		root = (x + (f / x)) * 0.5;
+		if (fabs(root - x) <= acc)
+			break;
+	}
+	
+	return root;
+}
+
 /*
 ============
-CalculateProjectileZ
+CalculateMissileTrajectory
 
-For projectiles that use gravity, calculate the speed they need to
-arc it towards their destination. If blocked, do the standard arc
-formula. Also randomizes accuracy based on distance.
+Get the launch angle that will send a projectile with gravity to its destination.
 ============
 */
-float(vector orig, vector end, vector vel) CalculateProjectileZ
+void(entity missile, vector end, float shortest = 1) CalculateMissileTrajectory
 {
-	local vector xy = orig - end;
-	xy_z = 0;
-	local float dist = vlen(xy);
-	if (dist > INACCURACY_RANGE)
+	vector dir = end - missile.origin;
+	if (!dir.x && !dir.y)
+		return;
+
+	float g = cvar("sv_gravity");
+	if (!g)
+		return;
+
+	float v = vlen(missile.velocity);
+	if (!v)
+		return;
+
+	makevectors([0.0, missile.angles.y, 0.0]);
+
+	float yHit = dir.z;
+	dir.z = 0.0;
+	float xHit = vlen(dir);
+
+	float pchOfs;
+	float v2 = v * v;
+	float r = v2 * v2 - g * (g * xHit * xHit + 2 * yHit * v2);
+	// If the root is complex, the destination is out of range.
+	if (r < 0.0)
 	{
-		local float multi = (dist-INACCURACY_RANGE) / INACCURACY_RANGE;
-		if (multi > 1)
-			multi = 1;
-		
-		end += normalize(xy) * INACCURACY_DIST*multi*random();
+		// If the xy distance is further than the height, go for max distance, otherwise just
+		// try to shoot it vaguely upward near their position.
+		if (xHit > yHit)
+			pchOfs = 1.0;
+		else
+			pchOfs = 1.732;
 	}
-	
-	local float traveltime = vlen(end - orig) / vlen(vel);
-	local float grav = -1 * cvar("sv_gravity");
-	local float zspeed = (end_z-orig_z - 0.5*grav*traveltime*traveltime) / traveltime;
-	
-	if (traveltime > 0.2)
+	else
 	{
-		local vector newvel = vel;
-		newvel_z = zspeed;
-		
-		local float precision = ceil(60 * traveltime); // give longer ranges more precise checking
-		if (precision > 60)
-			precision = 60;
-		
-		++precision;
-		for (float interval = 1; interval < precision; ++interval)
+		float xComp = g * xHit;
+
+		float rt = sqrt(r);
+		float p1 = (v2 - rt) / xComp;
+		float p2 = (v2 + rt) / xComp;
+
+		if (shortest)
 		{
-			local float newtime = traveltime * (interval/precision);
-			local vector dest = orig + newvel*newtime;
-			dest_z = orig_z + newvel_z*newtime + 0.5*grav*newtime*newtime;
-			
-			if (pointcontents(dest) == CONTENT_SOLID)
-				return vel_z + 300;
+			if (p2 < p1)
+				p1 = p2;
 		}
+		else if (p2 > p1)
+		{
+			p1 = p2;
+		}
+
+		pchOfs = p1;
 	}
-	
-	return zspeed;
+
+	missile.velocity = normalize(v_forward + v_up * pchOfs) * v;
+	missile.angles = vectoangles(missile.velocity);
 };
 
 float(entity targ, float ang) CheckAboveBelow =
@@ -707,17 +740,23 @@ entity(vector orig, vector ofs, float speed, float lifetime, string model, float
 	
 	missile.angles = vectoangles(missile.velocity);
 	
-	if (grav)
-	{
-		makevectors(missile.angles);
-		
-		missile.velocity = normalize(missile.velocity/speed + v_up*GetPitchOffset(missile.angles.x, 0.3639)) * speed;
-		missile.angles = vectoangles(missile.velocity);
-	}
-	
 	setmodel(missile, model);
 	setsize(missile, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin(missile, orig);
+
+	if (grav)
+	{
+		if (in_view)
+		{
+			CalculateMissileTrajectory(missile, end);
+		}
+		else
+		{
+			makevectors(missile.angles);
+			missile.velocity = normalize(v_forward + v_up * GetPitchOffset(-missile.angles.x, 0.3639)) * speed;
+			missile.angles = vectoangles(missile.velocity);
+		}
+	}
 	
 	return missile;
 };
