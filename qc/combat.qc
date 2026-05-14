@@ -592,41 +592,30 @@ void(entity missile, vector end, float shortest = 1) CalculateMissileTrajectory
 	dir.z = 0.0;
 	float xHit = vlen(dir);
 
-	float pchOfs;
 	float v2 = v * v;
 	float r = v2 * v2 - g * (g * xHit * xHit + 2 * yHit * v2);
-	// If the root is complex, the destination is out of range.
+	// If the root is complex, the destination is out of range, so just
+	// fire along the closest path.
 	if (r < 0.0)
-	{
-		// If the xy distance is further than the height, go for max distance, otherwise just
-		// try to shoot it vaguely upward near their position.
-		if (xHit > yHit)
-			pchOfs = 1.0;
-		else
-			pchOfs = 1.732;
-	}
-	else
-	{
-		float xComp = g * xHit;
+		r = 0.0;
 
-		float rt = sqrt(r);
-		float p1 = (v2 - rt) / xComp;
-		float p2 = (v2 + rt) / xComp;
+	float xComp = g * xHit;
 
-		if (shortest)
-		{
-			if (p2 < p1)
-				p1 = p2;
-		}
-		else if (p2 > p1)
-		{
+	float rt = sqrt(r);
+	float p1 = (v2 - rt) / xComp;
+	float p2 = (v2 + rt) / xComp;
+
+	if (shortest)
+	{
+		if (p2 < p1)
 			p1 = p2;
-		}
-
-		pchOfs = p1;
+	}
+	else if (p2 > p1)
+	{
+		p1 = p2;
 	}
 
-	missile.velocity = normalize(v_forward + v_up * pchOfs) * v;
+	missile.velocity = normalize(v_forward + v_up * p1) * v;
 	missile.angles = vectoangles(missile.velocity);
 };
 
